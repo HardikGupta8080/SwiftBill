@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "901222877569",
+    "project_id": "swiftbill-4d656",
+    "storage_bucket": "swiftbill-4d656.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:901222877569:android:7e9fc4740709d15352c080",
+        "android_client_info": {
+          "package_name": "com.example.swiftbill"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFXoV-suzOHwkBosEWCdOPoPyQ6CZdgPw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

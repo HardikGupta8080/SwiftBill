@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@id/home">
+    <fragment
+        android:id="@+id/home"
+        android:name="com.example.swiftbill.fragments.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_home_to_items"
+            app:destination="@id/items" />
+    </fragment>
+    <fragment
+        android:id="@+id/dashboard"
+        android:name="com.example.swiftbill.fragments.DashboardFragment"
+        android:label="fragment_dashboard"
+        tools:layout="@layout/fragment_dashboard" />
+    <fragment
+        android:id="@+id/items"
+        android:name="com.example.swiftbill.fragments.Items"
+        android:label="fragment_items"
+        tools:layout="@layout/fragment_items" >
+        <action
+            android:id="@+id/action_items_to_addItemsFragment"
+            app:destination="@id/addItemsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/menu"
+        android:name="com.example.swiftbill.fragments.MenuFragment"
+        android:label="fragment_menu"
+        tools:layout="@layout/fragment_menu" />
+    <fragment
+        android:id="@+id/addItemsFragment"
+        android:name="com.example.swiftbill.fragments.AddItemsFragment"
+        android:label="fragment_add_items"
+        tools:layout="@layout/fragment_add_items" >
+        <action
+            android:id="@+id/action_addItemsFragment_to_items"
+            app:destination="@id/items" />
+    </fragment>
+</navigation>
