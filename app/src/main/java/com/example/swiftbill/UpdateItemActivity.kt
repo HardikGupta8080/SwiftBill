@@ -2,6 +2,7 @@
 
 package com.example.swiftbill
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -9,11 +10,13 @@ import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import com.example.swiftbill.databinding.ActivityUpdateItemBinding
 import com.example.swiftbill.model.Item
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -55,6 +58,57 @@ class UpdateItemActivity : AppCompatActivity() {
         binding.cost.setText(cp)
         binding.sell.setText(sp)
         binding.stok.setText(stock)
+
+        binding.deleteitem.setOnClickListener {
+            val db = FirebaseFirestore.getInstance()
+            val documentRef = db.collection(Firebase.auth.currentUser?.uid.toString()).document(uid.toString())
+
+            // Fetch the document data before deletion
+            documentRef.get().addOnSuccessListener { documentSnapshot ->
+                    if (documentSnapshot.exists()) {
+                        val documentData = documentSnapshot.data
+
+                        // Show the confirmation dialog
+                        AlertDialog.Builder(this)
+                            .setTitle("Delete")
+                            .setMessage("Are you sure you want to Delete?")
+                            .setPositiveButton("Yes") { dialog, which ->
+                                // Delete the document
+                                documentRef.delete()
+                                    .addOnSuccessListener {
+                                        // Document successfully deleted
+
+                                        Toast.makeText(this,"Deleted successfully",Toast.LENGTH_SHORT).show()
+
+                                        UpdateItemActivity().supportFragmentManager.popBackStack()
+                                        // Show Snackbar with Undo option
+                                        Snackbar.make(binding.root, "Document deleted", Snackbar.LENGTH_LONG).setAction("Undo") {
+                                                // Re-add the document if Undo is clicked
+                                                documentRef.set(documentData ?: hashMapOf<String, Any>())
+                                                    .addOnSuccessListener {
+                                                        Log.d("Firestore", "DocumentSnapshot successfully restored!")
+                                                    }
+                                                    .addOnFailureListener { e ->
+                                                        Log.w("Firestore", "Error restoring document", e)
+                                                    }
+                                            }.show()
+                                    }
+                                    .addOnFailureListener { e ->
+                                        Log.w("Firestore", "Error deleting document", e)
+                                    }
+                            }
+                            .setNegativeButton("No") { dialog, which ->
+                                dialog.dismiss()
+                            }
+                            .show()
+                    } else {
+                        Log.w("Firestore", "Document does not exist")
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Log.w("Firestore", "Error fetching document", e)
+                }
+        }
 
         binding.Update.setOnClickListener {
             var name = binding.Name.editText?.text.toString()

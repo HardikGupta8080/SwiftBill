@@ -137,5 +137,20 @@
             app:title="Update Item Details"
             app:titleTextColor="@color/white"/>
 
+        <TextView
+            android:id="@+id/deleteitem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:clickable="true"
+            android:text="Delete this Item"
+            android:padding="10dp"
+            android:textColor="@android:color/holo_red_dark"
+            android:background="?attr/selectableItemBackground"
+            app:layout_constraintEnd_toEndOf="@+id/stock"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/stock"
+            app:layout_constraintTop_toBottomOf="@+id/stock" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>
