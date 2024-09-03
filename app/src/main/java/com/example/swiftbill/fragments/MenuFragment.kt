@@ -8,8 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.swiftbill.LogIn_Activity
-import com.example.swiftbill.R
-import com.example.swiftbill.databinding.FragmentAddItemsBinding
 import com.example.swiftbill.databinding.FragmentMenuBinding
 import com.google.firebase.auth.FirebaseAuth
 

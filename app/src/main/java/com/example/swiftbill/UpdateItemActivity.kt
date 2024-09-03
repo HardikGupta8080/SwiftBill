@@ -80,7 +80,7 @@ class UpdateItemActivity : AppCompatActivity() {
 
                                         Toast.makeText(this,"Deleted successfully",Toast.LENGTH_SHORT).show()
 
-                                        UpdateItemActivity().supportFragmentManager.popBackStack()
+
                                         // Show Snackbar with Undo option
                                         Snackbar.make(binding.root, "Document deleted", Snackbar.LENGTH_LONG).setAction("Undo") {
                                                 // Re-add the document if Undo is clicked
@@ -92,6 +92,7 @@ class UpdateItemActivity : AppCompatActivity() {
                                                         Log.w("Firestore", "Error restoring document", e)
                                                     }
                                             }.show()
+                                        UpdateItemActivity().supportFragmentManager.popBackStack()
                                     }
                                     .addOnFailureListener { e ->
                                         Log.w("Firestore", "Error deleting document", e)

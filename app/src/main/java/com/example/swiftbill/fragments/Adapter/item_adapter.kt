@@ -53,5 +53,5 @@ class item_adapter(
         holder.stock.text = "${item.inStock}"
     }
 
-    override fun getItemCount() = itemList.size
+    override fun getItemCount()=itemList.size
 }

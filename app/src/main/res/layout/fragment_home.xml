@@ -7,13 +7,14 @@
     tools:context=".fragments.HomeFragment">
 
     <RelativeLayout
+        android:id="@+id/relativelayout"
         android:layout_width="0dp"
         android:layout_height="135dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="144dp"
         android:layout_marginEnd="8dp"
         android:background="@drawable/shape"
-        android:elevation="20dp"
+        android:elevation="10dp"
         android:backgroundTint="@color/white"
         android:outlineSpotShadowColor="@color/blue"
        android:padding="8dp"
@@ -45,6 +46,7 @@
             android:layout_marginTop="0dp"
             android:layout_marginEnd="-4dp"
             android:layout_marginBottom="18dp"
+            android:fontFamily="@font/nunito"
             android:gravity="center_horizontal"
             android:text="Inventory" />
 
@@ -57,6 +59,7 @@
             android:layout_alignParentBottom="true"
             android:layout_marginTop="0dp"
             android:layout_marginBottom="18dp"
+            android:fontFamily="@font/nunito"
             android:gravity="center_horizontal"
             android:text="Party" />
 
@@ -90,6 +93,7 @@
             android:layout_alignParentTop="true"
             android:layout_marginStart="20dp"
             android:layout_marginTop="2dp"
+            android:fontFamily="@font/nunito_bold"
             android:text="Quick Link"
             android:textSize="16sp"
             android:textStyle="bold" />
@@ -99,26 +103,65 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
-        android:layout_width="412dp"
-        android:layout_height="490dp"
-        android:layout_marginBottom="72dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/relativelayout">
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView2"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="56dp"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.666"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0"
-            tools:listitem="@layout/bill_layout"/>
+            tools:listitem="@layout/bill_layout" />
+
+        <Button
+            android:id="@+id/sale"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="28dp"
+            android:backgroundTint="@color/blue"
+            android:elevation="4dp"
+            android:text="Add Sale"
+            android:fontFamily="@font/nunito_bold"
+            android:padding="12dp"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="@+id/recyclerView2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent" />
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="36dp"
+        android:fontFamily="@font/nunito_bold"
+        android:text="Welcome"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/nameuser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="@+id/textView9"
+        app:layout_constraintTop_toBottomOf="@+id/textView9" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

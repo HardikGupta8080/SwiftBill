@@ -129,7 +129,9 @@
                 android:shadowRadius="10"
                 app:border_radius="19dp"
                 app:outer_color="@color/blue"
-                app:text="Slide to unlock" />
+                app:text="Slide to Login"
+                app:text_size="20sp"
+                app:text_style="bold" />
 
         </RelativeLayout>
 
