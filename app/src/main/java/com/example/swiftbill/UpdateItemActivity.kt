@@ -33,11 +33,7 @@ class UpdateItemActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { view, insets ->
-            val imeHeight = insets.getInsets(WindowInsetsCompat.Type.ime()).bottom
-            view.updatePadding(bottom =  imeHeight )
-            insets
-        }
+
 
 
         setSupportActionBar(binding.toolbar)
@@ -58,7 +54,7 @@ class UpdateItemActivity : AppCompatActivity() {
         binding.cost.setText(cp)
         binding.sell.setText(sp)
         binding.stok.setText(stock)
-
+//for deleting
         binding.deleteitem.setOnClickListener {
             val db = FirebaseFirestore.getInstance()
             val documentRef = db.collection(Firebase.auth.currentUser?.uid.toString()).document(uid.toString())
@@ -80,7 +76,7 @@ class UpdateItemActivity : AppCompatActivity() {
 
                                         Toast.makeText(this,"Deleted successfully",Toast.LENGTH_SHORT).show()
 
-                                        UpdateItemActivity().supportFragmentManager.popBackStack()
+
                                         // Show Snackbar with Undo option
                                         Snackbar.make(binding.root, "Document deleted", Snackbar.LENGTH_LONG).setAction("Undo") {
                                                 // Re-add the document if Undo is clicked
@@ -92,6 +88,7 @@ class UpdateItemActivity : AppCompatActivity() {
                                                         Log.w("Firestore", "Error restoring document", e)
                                                     }
                                             }.show()
+                                        UpdateItemActivity().supportFragmentManager.popBackStack()
                                     }
                                     .addOnFailureListener { e ->
                                         Log.w("Firestore", "Error deleting document", e)
@@ -109,7 +106,7 @@ class UpdateItemActivity : AppCompatActivity() {
                     Log.w("Firestore", "Error fetching document", e)
                 }
         }
-
+//for Updating
         binding.Update.setOnClickListener {
             var name = binding.Name.editText?.text.toString()
             var stock = binding.stock.editText?.text.toString()

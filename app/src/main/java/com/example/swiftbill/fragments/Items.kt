@@ -1,16 +1,13 @@
 // Items.kt
 
 package com.example.swiftbill.fragments
-
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,7 +18,7 @@ import com.example.swiftbill.databinding.FragmentItemsBinding
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import androidx.appcompat.widget.SearchView
-import androidx.core.content.ContextCompat
+
 import com.example.swiftbill.UpdateItemActivity
 import com.example.swiftbill.model.Item
 import com.google.firebase.Firebase
@@ -36,6 +33,7 @@ class Items : Fragment(), item_adapter.OnItemClickListener {
     private lateinit var navController: NavController
     private val db = FirebaseFirestore.getInstance()
     private var itemListener: ListenerRegistration? = null
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

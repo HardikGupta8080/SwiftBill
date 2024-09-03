@@ -9,12 +9,14 @@ import com.example.swiftbill.databinding.ActivitySignupBinding
 import com.example.swiftbill.model.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.ncorti.slidetoact.SlideToActView
 
 class SignupActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySignupBinding
     private lateinit var auth: FirebaseAuth
+    private var db=FirebaseFirestore.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,8 +46,13 @@ class SignupActivity : AppCompatActivity() {
                                         "Sign Up Successful",
                                         Toast.LENGTH_SHORT
                                     ).show()
-                                    startActivity(Intent(this@SignupActivity,splashActivity::class.java))
-                                finish()
+                                    val userMap = mapOf(
+                                        "name" to user.name.toString(),
+                                        "email" to user.email.toString()
+                                    )
+                                    db.collection("USER").document(Firebase.auth.currentUser?.uid.toString()).set(userMap)
+                                    startActivity(Intent(this@SignupActivity,HostActivity::class.java))
+                                    finish()
                                 }
                                 else {
                                     Toast.makeText(

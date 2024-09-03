@@ -41,20 +41,20 @@ class AddItemsFragment : Fragment() {
 
         binding.add.setOnClickListener {
             val product = Item().apply {
-                productname = binding.itemname.editText?.text.toString()
-                val costPriceString = binding.costprice.editText?.text.toString()
-                val sellPriceString = binding.sellprice.editText?.text.toString()
-                val stockstring = binding.stock.editText?.text.toString()
-                ratecp = costPriceString.toIntOrNull() ?: 0
-                ratesp = sellPriceString.toIntOrNull() ?: 0
-                inStock = stockstring.toIntOrNull() ?:0
+                productname = binding.itemname.editText?.text.toString()?.trim()
+                val costPriceString = binding.costprice.editText?.text.toString()?.trim()
+                val sellPriceString = binding.sellprice.editText?.text.toString()?.trim()
+                val stockstring = binding.stock.editText?.text.toString()?.trim()
+                ratecp = costPriceString!!.toIntOrNull() ?: 0
+                ratesp = sellPriceString!!.toIntOrNull() ?: 0
+                inStock = stockstring!!.toIntOrNull() ?:0
                 uidcode= UUID.randomUUID().toString()
 
             }
 
 
             if (product.productname.isNullOrEmpty() || product.ratecp!! <= 0 || product.ratesp!! <= 0) {
-                Toast.makeText(requireContext(), "Enter Valid Details", Toast.LENGTH_SHORT).show()
+
                 binding.itemname.error = if (product.productname.isNullOrEmpty()) "Please enter a product name" else null
                 binding.costprice.error = if (product.ratecp!! <= 0) "Please enter a valid cost price" else null
                 binding.sellprice.error = if (product.ratesp!! <= 0) "Please enter a valid sell price" else null

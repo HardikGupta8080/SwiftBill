@@ -58,7 +58,9 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    implementation ("com.google.android.material:material:1.5.0")
-    implementation ("com.ncorti:slidetoact:0.9.0")
-    implementation ("nl.joery.animatedbottombar:library:1.1.0")
+    implementation (libs.material.v150)
+    implementation (libs.slidetoact)
+    implementation (libs.library)
+    implementation (libs.sdp.android)
+    implementation (libs.ssp.android)
 }

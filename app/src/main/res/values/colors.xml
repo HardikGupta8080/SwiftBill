@@ -3,5 +3,14 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="blue">#2F80ED</color>
-    <color name="bl">#8ACFF6</color>
+    <color name="trackOn">#23D72A</color>
+    <color name="trackOff">#E21607</color>
+    <color name="colorOn">#15DF1C</color>
+    <color name="colorOff">#E21607</color>
+    <!-- res/color/switch_thumb_color.xml -->
+
+    <!-- res/color/switch_track_color.xml -->
+
+
+
 </resources>
