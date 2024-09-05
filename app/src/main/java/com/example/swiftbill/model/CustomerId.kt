@@ -11,8 +11,9 @@ class CustomerId {
         openingBal=OB
 
     }
-    constructor(CustomerName: String?) {
+    constructor(CustomerName: String?,OB: Int?) {
         this.CustomerName = CustomerName
+        openingBal=OB
     }
 
 }

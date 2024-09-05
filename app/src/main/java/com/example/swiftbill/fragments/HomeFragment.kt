@@ -17,6 +17,7 @@ import com.example.swiftbill.AddsaleActivity
 import com.example.swiftbill.databinding.FragmentHomeBinding
 import com.example.swiftbill.fragments.Adapter.BillAdapter
 import com.example.swiftbill.model.Billdata
+import com.example.swiftbill.model.FadeInItemAnimator
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -55,9 +56,14 @@ class HomeFragment : Fragment() {
         binding.recyclerView2.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = billAdapter
+
+            // Add item animator for the fade effect
+            itemAnimator = FadeInItemAnimator()
+
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
+
                     if (dy > 0 && binding.sale.isShown) {
                         binding.sale.animate()
                             .translationY(binding.sale.height.toFloat())
@@ -74,6 +80,8 @@ class HomeFragment : Fragment() {
                 }
             })
         }
+
+
         //creating a bill
         binding.sale.setOnClickListener {
             startActivity(Intent(requireContext(), AddsaleActivity::class.java))

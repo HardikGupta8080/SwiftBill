@@ -125,10 +125,10 @@ class UpdateItemActivity : AppCompatActivity() {
                 )
                 db.collection(Firebase.auth.currentUser?.uid.toString()).document(uid.toString())
                     .update(updates).addOnSuccessListener {
-                    Toast.makeText(this, "Done", Toast.LENGTH_SHORT).show()
+                        finish()
                 }
                     .addOnFailureListener {
-                        Toast.makeText(this, "Not Done", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Failed to Update due to poor internet" , Toast.LENGTH_SHORT).show()
                     }
 
             }

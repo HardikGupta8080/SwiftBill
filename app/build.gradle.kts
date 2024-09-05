@@ -63,4 +63,7 @@ dependencies {
     implementation (libs.library)
     implementation (libs.sdp.android)
     implementation (libs.ssp.android)
+
+    implementation ("com.google.android.material:material:1.7.0") // or the latest stable version
+
 }

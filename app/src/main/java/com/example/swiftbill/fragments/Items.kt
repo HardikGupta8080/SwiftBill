@@ -18,6 +18,7 @@ import com.example.swiftbill.databinding.FragmentItemsBinding
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import androidx.appcompat.widget.SearchView
+import com.example.swiftbill.AddsaleActivity
 
 import com.example.swiftbill.UpdateItemActivity
 import com.example.swiftbill.model.Item
@@ -67,6 +68,7 @@ class Items : Fragment(), item_adapter.OnItemClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         fetchItemsFromFirestore()
+
         navController = Navigation.findNavController(view)
         binding.myButton.setOnClickListener {
             navController.navigate(R.id.action_items_to_addItemsFragment)
@@ -99,6 +101,10 @@ class Items : Fragment(), item_adapter.OnItemClickListener {
         }//for scrolling of button.
 
 
+
+
+
+
     }
 
     override fun onDestroyView() {
@@ -125,15 +131,13 @@ class Items : Fragment(), item_adapter.OnItemClickListener {
                         }
                     }
 
+
                     // Sort the items after fetching
                     itemList.sortWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.productname!! })
 
                     // Notify the adapter about data change
                     itemAdapter.notifyDataSetChanged()
 
-                    itemList.forEach {
-                        Log.d("TAG", "Item: $it")
-                    }
                 }
             }
     }
