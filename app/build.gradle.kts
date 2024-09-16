@@ -55,6 +55,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.firebase.firestore)
+    implementation(libs.androidx.foundation.android)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -63,7 +64,7 @@ dependencies {
     implementation (libs.library)
     implementation (libs.sdp.android)
     implementation (libs.ssp.android)
-
+    implementation ("com.itextpdf:itext7-core:7.1.15")
     implementation ("com.google.android.material:material:1.7.0") // or the latest stable version
 
 }

@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,19 +23,47 @@ import androidx.appcompat.widget.SearchView
 import com.example.swiftbill.AddsaleActivity
 
 import com.example.swiftbill.UpdateItemActivity
+import com.example.swiftbill.model.Billdata
 import com.example.swiftbill.model.Item
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 
 class Items : Fragment(), item_adapter.OnItemClickListener {
 
     private var _binding: FragmentItemsBinding? = null
     private val binding get() = _binding!!
+
     private lateinit var itemAdapter: item_adapter
     private var itemList: MutableList<Item> = mutableListOf()
     private lateinit var navController: NavController
     private val db = FirebaseFirestore.getInstance()
     private var itemListener: ListenerRegistration? = null
+    // ActivityResultLauncher to receive result from UpdateItemActivity
+    private val updateItemLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == AppCompatActivity.RESULT_OK) {
+            val data = result.data
+            val documentData = data?.getSerializableExtra("UNDO_DATA") as? Map<String, Any>
+            val itemId = data?.getStringExtra("ITEM_ID")
+
+            // Show the Snackbar with the Undo action in this fragment
+            Snackbar.make(binding.root, "Item deleted", Snackbar.LENGTH_LONG).setAction("Undo") {
+                // Re-add the document if Undo is clicked
+                val db = FirebaseFirestore.getInstance()
+                val documentRef = db.collection("USER").document(Firebase.auth.currentUser?.uid.toString())
+                    .collection("INVENTORY").document(itemId.toString())
+
+                documentRef.set(documentData ?: hashMapOf<String, Any>())
+                    .addOnSuccessListener {
+                        Log.d("Firestore", "DocumentSnapshot successfully restored!")
+                    }
+                    .addOnFailureListener { e ->
+                        Log.w("Firestore", "Error restoring document", e)
+                    }
+            }.show()
+        }
+    }
 
 
     override fun onCreateView(
@@ -41,6 +71,7 @@ class Items : Fragment(), item_adapter.OnItemClickListener {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentItemsBinding.inflate(inflater, container, false)
+
 
         binding.searchView.setOnClickListener {
             binding.searchView.isIconified = false
@@ -59,12 +90,8 @@ class Items : Fragment(), item_adapter.OnItemClickListener {
                 return true
             }
         })
-
-
-
         return binding.root
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         fetchItemsFromFirestore()
@@ -99,12 +126,6 @@ class Items : Fragment(), item_adapter.OnItemClickListener {
                 }
             })
         }//for scrolling of button.
-
-
-
-
-
-
     }
 
     override fun onDestroyView() {
@@ -115,7 +136,7 @@ class Items : Fragment(), item_adapter.OnItemClickListener {
     }
 
     private fun fetchItemsFromFirestore() {
-        itemListener = db.collection(Firebase.auth.currentUser?.uid.toString())
+        itemListener = db.collection("USER").document(Firebase.auth.currentUser?.uid.toString()).collection("INVETORY")
             .addSnapshotListener { snapshots, e ->
                 if (e != null) {
                     Log.w("TAG", "Listen failed.", e)
@@ -162,5 +183,6 @@ class Items : Fragment(), item_adapter.OnItemClickListener {
         intent.putExtra("STOCK",item.inStock.toString())// Pass the item's ID or any other necessary data
         intent.putExtra("UID",item.uidcode)
         startActivity(intent)
+
     }
 }

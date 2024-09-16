@@ -17,6 +17,7 @@ class Item() : Parcelable {
         this.ratesp = ratesp
         this.inStock = instock
         this.uidcode = code
+
     }
 
     // Parcelable implementation
