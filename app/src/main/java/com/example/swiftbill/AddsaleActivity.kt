@@ -72,15 +72,18 @@ class AddsaleActivity : AppCompatActivity() {
         getLastInvoiceNumber { binding.invoiceNo.text = "#$it" }
 
         // Switch logic for customer
+        binding.paidamt.setText("0")
         binding.switch1.setOnCheckedChangeListener { _, isChecked ->
             binding.switch1.text = if (isChecked) "Cash" else "Credit"
 
             if(isChecked){
                 binding.paidamt.visibility=GONE
+
                 binding.textView16.visibility= GONE
                 binding.Coustmername.editText?.setText( "Cash")
             }
             else{
+
                 binding.paidamt.visibility= VISIBLE
                 binding.textView16.visibility= VISIBLE
                 binding.Coustmername.editText?.setText("")
@@ -88,7 +91,6 @@ class AddsaleActivity : AppCompatActivity() {
         }
 
         binding.amount.text = " ₹......."
-
         // Fetch inventory from Firestore
         fetchInventory()
 
@@ -107,7 +109,6 @@ class AddsaleActivity : AppCompatActivity() {
                 saveBillAndCustomerDetails(currentDate)
                 generateBillPdf()
             } else {
-
                 Toast.makeText(this, "Please fill in the Customer Name", Toast.LENGTH_LONG).show()
             }
         }
@@ -308,6 +309,12 @@ class AddsaleActivity : AppCompatActivity() {
     private fun saveBillAndCustomerDetails(currentDate: String) {
         var billdata: Billdata
        // Get the current state of the switch
+        val isSwitchOn = binding.switch1.isChecked // Check if switch is on
+        val Paidamount = if (isSwitchOn) {
+            updateTotalAmount()
+        } else {
+            binding.paidamt.text.toString().toIntOrNull() ?: 0
+        }
         getLastInvoiceNumber { newInvoiceNumber ->
             billdata = Billdata().apply {
                 customerName = binding.Coustmername.editText?.text.toString()
@@ -316,9 +323,9 @@ class AddsaleActivity : AppCompatActivity() {
                 contactno = binding.Contactno.editText?.text.toString()
                 totalAmount = updateTotalAmount()
                 items = billItemAdapter.getItems()
-                paid = totalAmount!! == amountpaid
-                amountpaid =binding.paidamt.text.toString().toIntOrNull() ?: 0
+                amountpaid=Paidamount
                 bal = totalAmount!! - amountpaid!!
+                paid = bal!! <=0
             }
 
             val customer = CustomerId().apply {
@@ -342,7 +349,7 @@ class AddsaleActivity : AppCompatActivity() {
                 finish()
             }
             .addOnFailureListener { e ->
-                Log.w("TAG", "Error saving bill", e)
+                Log.w("kk", "Error saving bill", e)
                 Toast.makeText(this, "Error saving bill: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
             }
 

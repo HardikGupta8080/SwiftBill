@@ -130,7 +130,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:hint="Coustumer Name"
+                    android:hint="Customer Name"
                     android:textColorHint="#8E8C8C"
 
                     app:boxStrokeColor="@color/blue"
