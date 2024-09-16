@@ -61,14 +61,14 @@ class AddItemsFragment : Fragment() {
             } else {
                 // Proceed with adding the item to the database
                 val userid=Firebase.auth.currentUser?.uid.toString()
-                db.collection(userid)
+                db.collection("USER").document(userid).collection("INVETORY")
                     .whereEqualTo("productname", product.productname)
                     .get()
                     .addOnSuccessListener { documents ->
                         if (documents.isEmpty) {
                             // No item with the same name found, add the new item
 
-                            db.collection(userid).document(product.uidcode.toString())
+                            db.collection("USER").document(userid).collection("INVETORY").document(product.uidcode.toString())
                                 .set(product)
                                 .addOnSuccessListener {
                                     Toast.makeText(requireContext(), "Item added successfully", Toast.LENGTH_SHORT).show()

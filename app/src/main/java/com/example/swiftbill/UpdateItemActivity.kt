@@ -57,12 +57,13 @@ class UpdateItemActivity : AppCompatActivity() {
 //for deleting
         binding.deleteitem.setOnClickListener {
             val db = FirebaseFirestore.getInstance()
-            val documentRef = db.collection(Firebase.auth.currentUser?.uid.toString()).document(uid.toString())
+            val documentRef = db.collection("USER").document(Firebase.auth.currentUser?.uid.toString()).collection("INVETORY").document(uid.toString())
 
             // Fetch the document data before deletion
             documentRef.get().addOnSuccessListener { documentSnapshot ->
                     if (documentSnapshot.exists()) {
-                        val documentData = documentSnapshot.data
+                        val documentData = documentSnapshot.data as HashMap<String, Any>?
+
 
                         // Show the confirmation dialog
                         AlertDialog.Builder(this)
@@ -78,17 +79,11 @@ class UpdateItemActivity : AppCompatActivity() {
 
 
                                         // Show Snackbar with Undo option
-                                        Snackbar.make(binding.root, "Document deleted", Snackbar.LENGTH_LONG).setAction("Undo") {
-                                                // Re-add the document if Undo is clicked
-                                                documentRef.set(documentData ?: hashMapOf<String, Any>())
-                                                    .addOnSuccessListener {
-                                                        Log.d("Firestore", "DocumentSnapshot successfully restored!")
-                                                    }
-                                                    .addOnFailureListener { e ->
-                                                        Log.w("Firestore", "Error restoring document", e)
-                                                    }
-                                            }.show()
-                                        UpdateItemActivity().supportFragmentManager.popBackStack()
+                                        val resultIntent = Intent()
+                                        resultIntent.putExtra("UNDO_DATA", documentData)
+                                        resultIntent.putExtra("ITEM_ID", uid)
+                                        setResult(RESULT_OK, resultIntent)
+                                       finish()
                                     }
                                     .addOnFailureListener { e ->
                                         Log.w("Firestore", "Error deleting document", e)
@@ -123,7 +118,7 @@ class UpdateItemActivity : AppCompatActivity() {
                     "ratecp" to cp.toInt(),
                     "ratesp" to sp.toInt()
                 )
-                db.collection(Firebase.auth.currentUser?.uid.toString()).document(uid.toString())
+                db.collection("USER").document(Firebase.auth.currentUser?.uid.toString()).collection("INVETORY").document(uid.toString())
                     .update(updates).addOnSuccessListener {
                         finish()
                 }

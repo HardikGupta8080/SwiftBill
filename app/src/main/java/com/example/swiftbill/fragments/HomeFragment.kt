@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -17,18 +18,22 @@ import com.example.swiftbill.AddsaleActivity
 import com.example.swiftbill.databinding.FragmentHomeBinding
 import com.example.swiftbill.fragments.Adapter.BillAdapter
 import com.example.swiftbill.model.Billdata
+
 import com.example.swiftbill.model.FadeInItemAnimator
+import com.example.swiftbill.model.Item
+import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 
 import java.time.LocalDate
 import java.util.Collections.reverse
-
 class HomeFragment : Fragment() {
-
+    private lateinit var billList: MutableList<Billdata>
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
-    private var db = FirebaseFirestore.getInstance()
+    private val db = FirebaseFirestore.getInstance()
     private lateinit var navController: NavController
     private lateinit var billAdapter: BillAdapter
     private val handler = Handler(Looper.getMainLooper())
@@ -48,17 +53,14 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
 
-        // Initialize the Billdata object
-
+        // Initialize the billList
+        billList = mutableListOf()
 
         // Set up RecyclerView
-        billAdapter = BillAdapter(generateRandomBills())
         binding.recyclerView2.apply {
             layoutManager = LinearLayoutManager(requireContext())
+            billAdapter = BillAdapter(billList)
             adapter = billAdapter
-
-            // Add item animator for the fade effect
-            itemAnimator = FadeInItemAnimator()
 
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -81,8 +83,10 @@ class HomeFragment : Fragment() {
             })
         }
 
+        // Fetch bills and set up the adapter
+        fetchBills()
 
-        //creating a bill
+        // Creating a bill
         binding.sale.setOnClickListener {
             startActivity(Intent(requireContext(), AddsaleActivity::class.java))
         }
@@ -93,6 +97,7 @@ class HomeFragment : Fragment() {
         }
         binding.party.setOnClickListener {
             // Handle party button click
+
         }
         binding.debt.setOnClickListener {
             // Handle debt button click
@@ -142,28 +147,25 @@ class HomeFragment : Fragment() {
         handler.post(runnable)
     }
 
-    private fun generateRandomBills(): MutableList<Billdata> {
-        val billlist: MutableList<Billdata> = mutableListOf()
-        val names = listOf(
-            "Alice", "Bob", "Charlie", "David", "Eva", "Frank", "Grace", "Henry", "Ivy", "Jack",
-            "Kara", "Liam", "Mona", "Nina", "Oscar", "Paul", "Quinn", "Rita", "Sam", "Tina"
-        )
+    private fun fetchBills() {
+        val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid.toString()
 
-        for (i in 1..20) {
-            val randomName = names.random()
-            val randomAmount = (500..5000).random()
-            val randomDate = LocalDate.now().minusDays((0..365).random().toLong()).toString()
-            var bill = Billdata();
-            bill.billId = i
-            bill.customerName = randomName
-            bill.totalAmount = randomAmount
-            bill.date = randomDate
+        db.collection("USER").document(currentUserUid).collection("BILL")
+            .addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    Log.w("TAG", "Listen failed.", e)
+                    return@addSnapshotListener
+                }
 
-            billlist.add(bill)
-        }
-
-        reverse(billlist)
-        return billlist
+                snapshot?.let {
+                    billList.clear()
+                    for (document in snapshot.documents) {
+                        document.toObject(Billdata::class.java)?.let { billList.add(it) }
+                    }
+                    // Notify the adapter about data changes
+                    billList.reverse()
+                    billAdapter.notifyDataSetChanged()
+                }
+            }
     }
 }
-
