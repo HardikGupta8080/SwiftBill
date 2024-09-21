@@ -116,32 +116,34 @@
                 android:padding="@dimen/_10sdp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
-
+<TextView
+    android:id="@+id/balance"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text=""
+    android:layout_marginTop="@dimen/_2sdp"
+    android:layout_gravity="end"
+    android:layout_marginEnd="@dimen/_10sdp"/>
                 <!-- Your layout elements -->
-                <TextView
-                    android:id="@+id/balance"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_5sdp"
-                    android:text="balance"
-                    android:layout_gravity="end"/>
                 <com.google.android.material.textfield.TextInputLayout
+
                     android:id="@+id/Coustmername"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+
                     android:hint="Customer Name"
                     android:textColorHint="#8E8C8C"
-
                     app:boxStrokeColor="@color/blue"
                     app:counterOverflowTextColor="@color/blue"
                     app:hintTextColor="@color/blue">
 
-                    <com.google.android.material.textfield.TextInputEditText
+                    <AutoCompleteTextView
+                        android:id="@+id/contactno_edit_text"
+                        android:paddingLeft="@dimen/_10sdp"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                    </com.google.android.material.textfield.TextInputEditText>
+                        android:layout_height="55dp"
+                         />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -149,19 +151,20 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginTop="5dp"
                     android:hint="Phone Number*"
                     android:textColorHint="#8E8C8C"
+
+                    android:layout_marginTop="5dp"
                     app:boxStrokeColor="@color/blue"
                     app:counterOverflowTextColor="@color/blue"
                     app:hintTextColor="@color/blue">
 
-                    <com.google.android.material.textfield.TextInputEditText
+                    <AutoCompleteTextView
+                        android:id="@+id/nameAutoComplete"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="phone">
-
-                    </com.google.android.material.textfield.TextInputEditText>
+                        android:paddingLeft="@dimen/_10sdp"
+                        android:inputType="phone"
+                        android:layout_height="55dp" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <!-- RecyclerView to display a list of items -->
@@ -173,7 +176,7 @@
                     android:layout_gravity="center"
                     android:layout_marginTop="5dp"
                     android:hint="Select Items"
-                    android:textColorHint="@null"
+                    android:textColorHint="#8E8C8C"
                     app:boxStrokeColor="@color/blue"
                     app:counterOverflowTextColor="@color/blue"
                     app:hintTextColor="@color/blue">
@@ -182,7 +185,7 @@
 
                         android:id="@+id/autoCompleteItems"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="55dp"
                         android:completionThreshold="1"
                         android:paddingLeft="@dimen/_10sdp" />
 

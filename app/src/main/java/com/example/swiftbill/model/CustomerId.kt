@@ -6,6 +6,7 @@ class CustomerId {
     var billlist: MutableList<Billdata>?= null
     var openingBal: Int?=null
 
+
     constructor()
     constructor(name:String?,contact:String?,OB:Int?,bill:MutableList<Billdata>?,paid:Boolean?){
         CustomerName=name

@@ -1,10 +1,8 @@
 package com.example.swiftbill
-
 import android.app.AlertDialog
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.Rect
 import android.graphics.pdf.PdfDocument
 import android.os.Bundle
 import android.os.Environment
@@ -13,9 +11,10 @@ import android.view.LayoutInflater
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.Canvas
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.swiftbill.databinding.ActivityAddsaleBinding
 import com.example.swiftbill.databinding.DialogAddItemBinding
@@ -30,19 +29,6 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.ktx.Firebase
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import com.itextpdf.layout.element.Cell
-import androidx.core.view.isNotEmpty
-import com.itextpdf.io.font.PdfEncodings
-import com.itextpdf.kernel.colors.ColorConstants
-import com.itextpdf.kernel.font.PdfFont
-import com.itextpdf.kernel.font.PdfFontFactory
-
-import com.itextpdf.kernel.pdf.PdfWriter
-
-import com.itextpdf.layout.Document
-import com.itextpdf.layout.element.Paragraph
-import com.itextpdf.layout.element.Table
-import com.itextpdf.layout.property.TextAlignment
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -55,7 +41,11 @@ class AddsaleActivity : AppCompatActivity() {
     private val binding by lazy {
         ActivityAddsaleBinding.inflate(layoutInflater)
     }
+    private var  customerList:MutableList<CustomerId> = mutableListOf()
     private var itemlist: MutableList<Item> = mutableListOf()
+
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -93,12 +83,16 @@ class AddsaleActivity : AppCompatActivity() {
         binding.amount.text = " ₹......."
         // Fetch inventory from Firestore
         fetchInventory()
-
+        //Featch costumer Data
+        fetchCustomers()
         // Initialize RecyclerView with empty data
         initializeRecyclerView()
-
         // Handle item selection in AutoCompleteTextView
         handleAutoCompleteSelection()
+        if (binding.Coustmername.editText?.text.toString().isEmpty())
+        {
+            binding.balance.setText("")
+        }
 
         binding.save.setOnClickListener {
 
@@ -112,6 +106,317 @@ class AddsaleActivity : AppCompatActivity() {
                 Toast.makeText(this, "Please fill in the Customer Name", Toast.LENGTH_LONG).show()
             }
         }
+    }
+
+
+
+
+    private fun fetchInventory() {
+        db.collection("USER").document(Firebase.auth.currentUser?.uid.toString())
+            .collection("INVETORY")
+            .addSnapshotListener { snapshots, e ->
+                if (e != null) {
+                    Log.w("TAG", "Listen failed.", e)
+                    return@addSnapshotListener
+                }
+
+                snapshots?.let {
+                    itemlist.clear()
+                    for (document in snapshots.documents) {
+                        document.toObject(Item::class.java)?.let { itemlist.add(it) }
+                    }
+
+                    setupAutoCompleteTextView()
+                }
+            }
+    }
+    private fun setupAutoCompleteTextView() {
+        val productNames = itemlist.mapNotNull { it.productname }
+        if (productNames.isNotEmpty()) {
+            val adapter = ArrayAdapter(
+                this,
+                android.R.layout.simple_dropdown_item_1line,
+                productNames
+            )
+            binding.autoCompleteItems.setAdapter(adapter)
+            binding.autoCompleteItems.threshold = 0
+        } else {
+            Toast.makeText(this, "No items available", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun initializeRecyclerView() {
+        val initialBillItems: MutableList<BillItem> = mutableListOf()
+        billItemAdapter = Bill_Item_Adapter(this, initialBillItems, { billItem, position ->
+            showAddItemDialog(
+                selectedItem = Item(),
+                billItemToUpdate = billItem,
+                position = position
+            )
+        }, binding.root)
+
+        binding.recyclerViewItems.apply {
+            layoutManager = LinearLayoutManager(this@AddsaleActivity)
+            adapter = billItemAdapter
+        }
+    }
+
+
+    private fun saveBillAndCustomerDetails(currentDate: String) {
+        var billdata: Billdata
+        // Get the current state of the switch
+        val isSwitchOn = binding.switch1.isChecked // Check if switch is on
+        val Paidamount = if (isSwitchOn) {
+            updateTotalAmount()
+        } else {
+            binding.paidamt.text.toString().toIntOrNull() ?: 0
+        }
+        getLastInvoiceNumber { newInvoiceNumber ->
+            billdata = Billdata().apply {
+                customerName = binding.Coustmername.editText?.text.toString()
+                date = currentDate
+                billId = newInvoiceNumber
+                contactno = binding.Contactno.editText?.text.toString()
+                totalAmount = updateTotalAmount()
+                items = billItemAdapter.getItems()
+                amountpaid=Paidamount
+                bal = totalAmount!! - amountpaid!!
+                paid = bal!! <=0
+            }
+
+            val customer = CustomerId().apply {
+                CustomerName = binding.Coustmername.editText?.text.toString()
+                contactNumber = binding.Contactno.editText?.text.toString()
+                openingBal = updateTotalAmount()- binding.paidamt.text.toString().toIntOrNull()!! ?: 0
+            }
+            saveBillToFirestore(billdata, customer)
+        }
+    }
+    private fun saveBillToFirestore(bill: Billdata, customer: CustomerId) {
+        val userId = Firebase.auth.currentUser?.uid.toString()
+        val billRef = db.collection("USER").document(userId).collection("BILL").document(bill.billId.toString())
+
+        // Save the bill
+        billRef.set(bill)
+            .addOnSuccessListener {
+                Toast.makeText(this, "Bill saved successfully", Toast.LENGTH_SHORT).show()
+                finish()
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Error saving bill: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
+            }
+
+        // Check if the customer exists using name and contact number
+        val customerQuery = db.collection("USER").document(userId).collection("CUSTOMER")
+            .whereEqualTo("contactNumber", customer.contactNumber)
+
+        customerQuery.get()
+            .addOnSuccessListener { querySnapshot ->
+                if (!querySnapshot.isEmpty) {
+                    // Customer exists, update their document
+                    val document = querySnapshot.documents.first()
+                    val existingCustomer = document.toObject(CustomerId::class.java)
+                    val updatedBills = existingCustomer?.billlist?.toMutableList() ?: mutableListOf()
+                    updatedBills.add(bill)
+                    existingCustomer?.apply {
+                        billlist = updatedBills
+                        openingBal = (openingBal ?: 0) + (bill.bal ?: 0)
+                    }
+
+                    // Update the existing customer document
+                    db.collection("USER").document(userId).collection("CUSTOMER").document(customer.contactNumber.toString())
+                        .set(existingCustomer!!)
+                        .addOnSuccessListener {
+                            Log.d("TAG", "Customer details updated successfully")
+                        }
+                        .addOnFailureListener { e ->
+                            Toast.makeText(this, "Failed to update customer details: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
+                        }
+                } else {
+                    // Customer does not exist, create a new document
+                    customer.billlist = mutableListOf(bill)
+
+                    // Add the new customer document
+                    db.collection("USER").document(userId).collection("CUSTOMER").document(customer.contactNumber.toString())
+                        .set(customer)
+                        .addOnSuccessListener { documentReference ->
+
+                        }
+                        .addOnFailureListener { e ->
+                            Toast.makeText(this, "Failed to save customer details: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
+                        }
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.w("TAG", "Error checking customer existence", e)
+                Toast.makeText(this, "Error checking customer existence: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
+            }
+
+        // Update the inventory for each item in the bill
+        for (item in bill.items ?: emptyList()) { // Handle null case for items
+            val itemRef = db.collection("USER").document(userId).collection("INVETORY").document(item.uidcode ?: "")
+            itemRef.get()
+                .addOnSuccessListener { document ->
+                    if (document.exists()) {
+                        val currentStock = document.getLong("inStock") ?: 0
+                        val updatedStock = currentStock - (item.quantity ?: 0)
+
+                        itemRef.update("inStock", updatedStock)
+                            .addOnSuccessListener {
+                                Log.d("TAG", "Inventory updated for item: ${item.productname}")
+                            }
+                            .addOnFailureListener { e ->
+                                Log.w("TAG", "Error updating inventory for item: ${item.productname}", e)
+                            }
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Log.w("TAG", "Error retrieving item: ${item.productname}", e)
+                }
+        }
+    }
+
+
+    private fun showAddItemDialog(
+        selectedItem: Item,
+        billItemToUpdate: BillItem? = null,
+        position: Int? = null
+    ) {
+        val dialogBinding = DialogAddItemBinding.inflate(LayoutInflater.from(this))
+        val dialogTitle = if (billItemToUpdate != null) "Update Item" else "Add Item to Bill"
+
+        dialogBinding.etSalePrice.setText(
+            billItemToUpdate?.sp?.toString() ?: selectedItem.ratesp?.toString()
+        )
+        dialogBinding.etDiscount.setText(billItemToUpdate?.discount?.toString() ?: "0")
+        dialogBinding.etQuantity.setText(billItemToUpdate?.quantity?.toString() ?: "")
+
+        val dialog = AlertDialog.Builder(this)
+            .setTitle(dialogTitle)
+            .setView(dialogBinding.root)
+            .setPositiveButton(if (billItemToUpdate != null) "Update" else "Add") { _, _ ->
+                val quantity = dialogBinding.etQuantity.text.toString()
+                val discount = dialogBinding.etDiscount.text.toString()
+                val salePrice = dialogBinding.etSalePrice.text.toString()
+
+                if (quantity.isNotEmpty() && discount.isNotEmpty() && salePrice.isNotEmpty()) {
+                    val billItem = BillItem(
+                        productname = billItemToUpdate?.productname ?: selectedItem.productname,
+                        quantity = quantity.toInt(),
+                        discount = discount.toInt(),
+                        sp = salePrice.toInt(),
+                        uid = selectedItem.uidcode
+                    )
+
+                    if (billItemToUpdate != null && position != null) {
+                        billItemAdapter.updateItem(billItem, position)
+                    } else {
+                        billItemAdapter.addItem(billItem)
+                    }
+                } else {
+                    Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
+                }
+
+                if (billItemToUpdate == null) binding.autoCompleteItems.text.clear()
+            }
+            .setNegativeButton("Cancel", null)
+            .create()
+        dialog.show()
+    }
+
+    private fun fetchCustomers() {
+        db.collection("USER").document(Firebase.auth.currentUser?.uid.toString())
+            .collection("CUSTOMER")
+            .addSnapshotListener { snapshots, e ->
+                if (e != null) {
+                    Log.w("TAG", "Listen failed.", e)
+                    return@addSnapshotListener
+                }
+
+                snapshots?.let {
+                    val newCustomerList = mutableListOf<CustomerId>()
+                    for (document in snapshots.documents) {
+                        document.toObject(CustomerId::class.java)?.let { newCustomerList.add(it) }
+                    }
+
+                    // Update local customerList
+                    customerList.clear()
+                    customerList.addAll(newCustomerList)
+
+                    // Update UI
+                    setupAutoCompleteForCustomer()
+                }
+            }
+    }
+
+    private fun setupAutoCompleteForCustomer() {
+        val customerNamesWithContactAndBalance = customerList.map {
+            "${it.CustomerName} (${it.contactNumber}) - ₹${it.openingBal}"
+        }
+        val customerContactsWithNameAndBalance = customerList.map {
+            "${it.contactNumber} (${it.CustomerName}) - ₹${it.openingBal}"
+        }
+
+        // Set up auto-complete for customer name
+        val nameAdapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_dropdown_item_1line,
+            customerNamesWithContactAndBalance
+        )
+        (binding.Coustmername.editText as? AutoCompleteTextView)?.apply {
+            setAdapter(nameAdapter)
+            threshold = 1
+            setOnItemClickListener { _, view, position, _ ->
+                // Extract contact number and balance from the selected item
+                val selectedText = (view as TextView).text.toString()
+                val contactNumber = selectedText.substringAfter("(").substringBefore(")")
+                val selectedCustomer = customerList.find { it.contactNumber == contactNumber }
+
+                selectedCustomer?.let { customer ->
+                    // Set only the customer's name
+                    binding.Coustmername.editText?.setText(customer.CustomerName)
+                    binding.Contactno.editText?.setText(customer.contactNumber)
+                    binding.balance.setText("₹${customer.openingBal}")
+                }
+            }
+        }
+
+        // Set up auto-complete for contact number
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    fun updateTotalAmount(): Int {
+        val totalAmount = calculateTotalAmount()
+        binding.amount.text = " ₹ $totalAmount"
+        return totalAmount
+    }
+
+    private fun calculateTotalAmount(): Int {
+        return billItemAdapter.getItems()
+            .sumOf { (it.sp?.minus(it.discount!!))?.times(it.quantity!!) ?: 0 }
+    }
+
+    private fun getLastInvoiceNumber(callback: (Int) -> Unit) {
+        db.collection("USER").document(Firebase.auth.currentUser?.uid.toString()).collection("BILL")
+            .orderBy("billId", Query.Direction.DESCENDING)
+            .limit(1)
+            .get()
+            .addOnSuccessListener { documents ->
+                val lastInvoiceNumber = documents.documents.firstOrNull()?.getLong("billId") ?: 0
+                callback((lastInvoiceNumber + 1).toInt())
+            }
     }
     fun generateBillPdf(): File? {
         val pdfDocument = PdfDocument()
@@ -225,59 +530,6 @@ class AddsaleActivity : AppCompatActivity() {
         canvas.drawText(text, xPos + 10f, yPos, paint)
     }
 
-
-
-
-    private fun fetchInventory() {
-        db.collection("USER").document(Firebase.auth.currentUser?.uid.toString())
-            .collection("INVETORY")
-            .addSnapshotListener { snapshots, e ->
-                if (e != null) {
-                    Log.w("TAG", "Listen failed.", e)
-                    return@addSnapshotListener
-                }
-
-                snapshots?.let {
-                    itemlist.clear()
-                    for (document in snapshots.documents) {
-                        document.toObject(Item::class.java)?.let { itemlist.add(it) }
-                    }
-
-                    setupAutoCompleteTextView()
-                }
-            }
-    }
-    private fun setupAutoCompleteTextView() {
-        val productNames = itemlist.mapNotNull { it.productname }
-        if (productNames.isNotEmpty()) {
-            val adapter = ArrayAdapter(
-                this,
-                android.R.layout.simple_dropdown_item_1line,
-                productNames
-            )
-            binding.autoCompleteItems.setAdapter(adapter)
-            binding.autoCompleteItems.threshold = 0
-        } else {
-            Toast.makeText(this, "No items available", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun initializeRecyclerView() {
-        val initialBillItems: MutableList<BillItem> = mutableListOf()
-        billItemAdapter = Bill_Item_Adapter(this, initialBillItems, { billItem, position ->
-            showAddItemDialog(
-                selectedItem = Item(),
-                billItemToUpdate = billItem,
-                position = position
-            )
-        }, binding.root)
-
-        binding.recyclerViewItems.apply {
-            layoutManager = LinearLayoutManager(this@AddsaleActivity)
-            adapter = billItemAdapter
-        }
-    }
-
     private fun handleAutoCompleteSelection() {
         binding.autoCompleteItems.setOnItemClickListener { parent, _, position, _ ->
             val selectedItem =
@@ -306,174 +558,5 @@ class AddsaleActivity : AppCompatActivity() {
             }
         }
     }
-    private fun saveBillAndCustomerDetails(currentDate: String) {
-        var billdata: Billdata
-       // Get the current state of the switch
-        val isSwitchOn = binding.switch1.isChecked // Check if switch is on
-        val Paidamount = if (isSwitchOn) {
-            updateTotalAmount()
-        } else {
-            binding.paidamt.text.toString().toIntOrNull() ?: 0
-        }
-        getLastInvoiceNumber { newInvoiceNumber ->
-            billdata = Billdata().apply {
-                customerName = binding.Coustmername.editText?.text.toString()
-                date = currentDate
-                billId = newInvoiceNumber
-                contactno = binding.Contactno.editText?.text.toString()
-                totalAmount = updateTotalAmount()
-                items = billItemAdapter.getItems()
-                amountpaid=Paidamount
-                bal = totalAmount!! - amountpaid!!
-                paid = bal!! <=0
-            }
 
-            val customer = CustomerId().apply {
-                CustomerName = binding.Coustmername.editText?.text.toString()
-                contactNumber = binding.Contactno.editText?.text.toString()
-                openingBal = updateTotalAmount()- binding.paidamt.text.toString().toIntOrNull()!! ?: 0
-            }
-            saveBillToFirestore(billdata, customer)
-        }
-    }
-
-    private fun saveBillToFirestore(bill: Billdata, customer: CustomerId) {
-        val userId = Firebase.auth.currentUser?.uid.toString()
-        val billRef = db.collection("USER").document(userId).collection("BILL").document(bill.billId.toString())
-        val customerRef = db.collection("USER").document(userId).collection("CUSTOMER").document(customer.CustomerName ?: "")
-
-        // Save the bill
-        billRef.set(bill)
-            .addOnSuccessListener {
-                Toast.makeText(this, "Bill saved successfully", Toast.LENGTH_SHORT).show()
-                finish()
-            }
-            .addOnFailureListener { e ->
-                Log.w("kk", "Error saving bill", e)
-                Toast.makeText(this, "Error saving bill: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
-            }
-
-        // Check if the customer exists
-        customerRef.get()
-            .addOnSuccessListener { document ->
-                if (document.exists()) {
-                    // Customer exists, update their document
-                    val existingCustomer = document.toObject(CustomerId::class.java)
-                    val updatedBills = existingCustomer?.billlist?.toMutableList() ?: mutableListOf()
-                    updatedBills.add(bill)
-                    customer.billlist = updatedBills
-
-                    customerRef.set(customer)
-                        .addOnSuccessListener {
-
-                        }
-                        .addOnFailureListener { e ->
-                            Toast.makeText(this, "Failed to update customer details: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
-                        }
-                } else {
-                    // Customer does not exist, create a new document
-                    customer.billlist = mutableListOf(bill)
-
-                    customerRef.set(customer)
-                        .addOnSuccessListener {}
-                        .addOnFailureListener { e ->
-                            Toast.makeText(this, "Failed to save customer details: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
-                        }
-                }
-            }
-            .addOnFailureListener { e ->
-                Log.w("TAG", "Error checking customer existence", e)
-                Toast.makeText(this, "Error checking customer existence: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
-            }
-        // Update the inventory for each item in the bill
-        for (item in bill.items ?: emptyList()) { // Handle null case for items
-            val itemRef = db.collection("USER").document(userId).collection("INVETORY").document(item.uidcode ?: "")
-            itemRef.get()
-                .addOnSuccessListener { document ->
-                    if (document.exists()) {
-                        val currentStock = document.getLong("inStock") ?: 0
-                        val updatedStock = currentStock - (item.quantity ?: 0)
-
-                        itemRef.update("inStock", updatedStock)
-                            .addOnSuccessListener {
-                                Log.d("TAG", "Inventory updated for item: ${item.productname}")
-                            }
-                            .addOnFailureListener { e ->
-                                Log.w("TAG", "Error updating inventory for item: ${item.productname}", e)
-                            }
-                    }
-                }
-                .addOnFailureListener { e ->
-                    Log.w("TAG", "Error retrieving item: ${item.productname}", e)
-                }
-        }
-    }
-    private fun showAddItemDialog(
-        selectedItem: Item,
-        billItemToUpdate: BillItem? = null,
-        position: Int? = null
-    ) {
-        val dialogBinding = DialogAddItemBinding.inflate(LayoutInflater.from(this))
-        val dialogTitle = if (billItemToUpdate != null) "Update Item" else "Add Item to Bill"
-
-        dialogBinding.etSalePrice.setText(
-            billItemToUpdate?.sp?.toString() ?: selectedItem.ratesp?.toString()
-        )
-        dialogBinding.etDiscount.setText(billItemToUpdate?.discount?.toString() ?: "0")
-        dialogBinding.etQuantity.setText(billItemToUpdate?.quantity?.toString() ?: "")
-
-        val dialog = AlertDialog.Builder(this)
-            .setTitle(dialogTitle)
-            .setView(dialogBinding.root)
-            .setPositiveButton(if (billItemToUpdate != null) "Update" else "Add") { _, _ ->
-                val quantity = dialogBinding.etQuantity.text.toString()
-                val discount = dialogBinding.etDiscount.text.toString()
-                val salePrice = dialogBinding.etSalePrice.text.toString()
-
-                if (quantity.isNotEmpty() && discount.isNotEmpty() && salePrice.isNotEmpty()) {
-                    val billItem = BillItem(
-                        productname = billItemToUpdate?.productname ?: selectedItem.productname,
-                        quantity = quantity.toInt(),
-                        discount = discount.toInt(),
-                        sp = salePrice.toInt(),
-                        uid = selectedItem.uidcode
-                    )
-
-                    if (billItemToUpdate != null && position != null) {
-                        billItemAdapter.updateItem(billItem, position)
-                    } else {
-                        billItemAdapter.addItem(billItem)
-                    }
-                } else {
-                    Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
-                }
-
-                if (billItemToUpdate == null) binding.autoCompleteItems.text.clear()
-            }
-            .setNegativeButton("Cancel", null)
-            .create()
-        dialog.show()
-    }
-
-    fun updateTotalAmount(): Int {
-        val totalAmount = calculateTotalAmount()
-        binding.amount.text = " ₹ $totalAmount"
-        return totalAmount
-    }
-
-    private fun calculateTotalAmount(): Int {
-        return billItemAdapter.getItems()
-            .sumOf { (it.sp?.minus(it.discount!!))?.times(it.quantity!!) ?: 0 }
-    }
-
-    private fun getLastInvoiceNumber(callback: (Int) -> Unit) {
-        db.collection("USER").document(Firebase.auth.currentUser?.uid.toString()).collection("BILL")
-            .orderBy("billId", Query.Direction.DESCENDING)
-            .limit(1)
-            .get()
-            .addOnSuccessListener { documents ->
-                val lastInvoiceNumber = documents.documents.firstOrNull()?.getLong("billId") ?: 0
-                callback((lastInvoiceNumber + 1).toInt())
-            }
-    }
 }

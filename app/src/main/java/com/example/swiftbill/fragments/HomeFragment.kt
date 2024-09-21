@@ -18,17 +18,8 @@ import com.example.swiftbill.AddsaleActivity
 import com.example.swiftbill.databinding.FragmentHomeBinding
 import com.example.swiftbill.fragments.Adapter.BillAdapter
 import com.example.swiftbill.model.Billdata
-
-import com.example.swiftbill.model.FadeInItemAnimator
-import com.example.swiftbill.model.Item
-import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.auth
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
-
-import java.time.LocalDate
-import java.util.Collections.reverse
 class HomeFragment : Fragment() {
     private lateinit var billList: MutableList<Billdata>
     private var _binding: FragmentHomeBinding? = null
@@ -163,7 +154,8 @@ class HomeFragment : Fragment() {
                         document.toObject(Billdata::class.java)?.let { billList.add(it) }
                     }
                     // Notify the adapter about data changes
-                    billList.reverse()
+                    billList.sortByDescending { it.billId }
+
                     billAdapter.notifyDataSetChanged()
                 }
             }
