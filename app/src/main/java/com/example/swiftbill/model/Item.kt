@@ -1,30 +1,46 @@
 package com.example.swiftbill.model
 
+import android.os.Parcel
+import android.os.Parcelable
 
-class Item() {
-    var productname: String? = null
-    var ratecp: Int? = null
-    var ratesp: Int? = null
-    var inStock: Int? = null
-    var uidcode: String? = null
-    var category: String? = null
+data class Item(
+    var productname: String? = null,  // Name of the product
+    var ratecp: Int? = null,           // Cost price
+    var ratesp: Int? = null,           // Selling price
+    var inStock: Int? = null,          // Quantity in stock
+    var uidcode: String? = null,       // Unique identifier code
+    var category: String? = null        // Product category
+) : Parcelable {
 
-    // Secondary constructor
-    constructor(
-        productname: String?,
-        ratecp: Int?,
-        ratesp: Int?,
-        instock: Int?,
-        code: String?,
-        category: String?
-    ) : this() {
-        this.productname = productname
-        this.ratecp = ratecp
-        this.ratesp = ratesp
-        this.inStock = instock
-        this.uidcode = code
-        this.category = category
+    constructor(parcel: Parcel) : this(
+        parcel.readString(),
+        parcel.readValue(Int::class.java.classLoader) as? Int,
+        parcel.readValue(Int::class.java.classLoader) as? Int,
+        parcel.readValue(Int::class.java.classLoader) as? Int,
+        parcel.readString(),
+        parcel.readString()
+    )
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(productname)
+        parcel.writeValue(ratecp)
+        parcel.writeValue(ratesp)
+        parcel.writeValue(inStock)
+        parcel.writeString(uidcode)
+        parcel.writeString(category)
     }
 
-    // Parcelable implementation
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<Item> {
+        override fun createFromParcel(parcel: Parcel): Item {
+            return Item(parcel)
+        }
+
+        override fun newArray(size: Int): Array<Item?> {
+            return arrayOfNulls(size)
+        }
+    }
 }

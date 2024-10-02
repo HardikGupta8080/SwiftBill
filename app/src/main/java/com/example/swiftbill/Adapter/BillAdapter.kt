@@ -1,4 +1,4 @@
-package com.example.swiftbill.fragments.Adapter
+package com.example.swiftbill.Adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

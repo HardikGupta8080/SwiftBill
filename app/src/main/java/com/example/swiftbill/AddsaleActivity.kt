@@ -18,7 +18,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.swiftbill.databinding.ActivityAddsaleBinding
 import com.example.swiftbill.databinding.DialogAddItemBinding
-import com.example.swiftbill.fragments.Adapter.Bill_Item_Adapter
+import com.example.swiftbill.Adapter.Bill_Item_Adapter
 import com.example.swiftbill.model.BillItem
 import com.example.swiftbill.model.Billdata
 import com.example.swiftbill.model.CustomerId
@@ -108,9 +108,6 @@ class AddsaleActivity : AppCompatActivity() {
         }
     }
 
-
-
-
     private fun fetchInventory() {
         db.collection("USER").document(Firebase.auth.currentUser?.uid.toString())
             .collection("INVETORY")
@@ -187,7 +184,7 @@ class AddsaleActivity : AppCompatActivity() {
             val customer = CustomerId().apply {
                 CustomerName = binding.Coustmername.editText?.text.toString()
                 contactNumber = binding.Contactno.editText?.text.toString()
-                openingBal = updateTotalAmount()- binding.paidamt.text.toString().toIntOrNull()!! ?: 0
+                openingBal = updateTotalAmount()- Paidamount
             }
             saveBillToFirestore(billdata, customer)
         }
@@ -254,7 +251,7 @@ class AddsaleActivity : AppCompatActivity() {
 
         // Update the inventory for each item in the bill
         for (item in bill.items ?: emptyList()) { // Handle null case for items
-            val itemRef = db.collection("USER").document(userId).collection("INVETORY").document(item.uidcode ?: "")
+            val itemRef = db.collection("USER").document(userId).collection("INVETORY").document(item.uid ?: "")
             itemRef.get()
                 .addOnSuccessListener { document ->
                     if (document.exists()) {

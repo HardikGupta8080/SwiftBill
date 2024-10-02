@@ -63,11 +63,15 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:clickable="true"
+        android:queryHint="Search item or category"
         android:focusable="true"
         android:iconifiedByDefault="false"
+        android:textColorHint="@color/blue"
+    android:textColor="@color/blue"
         android:background="@drawable/button_background"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />  <!-- Custom background for rounded corners -->
+      app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent" />
+    <!-- Custom background for rounded corners -->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

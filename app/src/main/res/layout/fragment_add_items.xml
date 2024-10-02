@@ -7,6 +7,30 @@
     tools:context=".fragments.AddItemsFragment">
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/Catgory"
+        android:layout_width="305dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="12dp"
+        android:hint="Catagory"
+        app:boxStrokeColor="@color/blue"
+        app:counterOverflowTextColor="@color/blue"
+        app:layout_constraintEnd_toEndOf="@+id/stock"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/stock"
+        app:layout_constraintTop_toBottomOf="@+id/stock">
+
+        <AutoCompleteTextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_45sdp"
+            android:paddingLeft="@dimen/_10sdp">
+
+        </AutoCompleteTextView>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/itemname"
         android:layout_width="305dp"
         android:layout_height="wrap_content"
@@ -44,7 +68,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/sellprice"
         app:layout_constraintTop_toBottomOf="@+id/sellprice"
-        app:layout_constraintVertical_bias="0.060000002">
+        app:layout_constraintVertical_bias="0.03">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
@@ -64,9 +88,10 @@
         app:counterOverflowTextColor="@color/blue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/itemname"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/itemname"
         app:layout_constraintTop_toBottomOf="@+id/itemname"
-        app:layout_constraintVertical_bias="0.050000012">
+        app:layout_constraintVertical_bias="0.03">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
@@ -86,9 +111,10 @@
         app:counterOverflowTextColor="@color/blue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/costprice"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/costprice"
         app:layout_constraintTop_toBottomOf="@+id/costprice"
-        app:layout_constraintVertical_bias="0.060000002">
+        app:layout_constraintVertical_bias="0.026">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
@@ -100,12 +126,12 @@
         android:id="@+id/add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
         android:backgroundTint="@color/blue"
         android:text="Add"
-        app:layout_constraintEnd_toEndOf="@+id/stock"
+        app:layout_constraintEnd_toEndOf="@+id/Catgory"
         app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="@+id/stock"
-        app:layout_constraintTop_toBottomOf="@+id/stock" />
+        app:layout_constraintStart_toStartOf="@+id/Catgory"
+        app:layout_constraintTop_toBottomOf="@+id/Catgory" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

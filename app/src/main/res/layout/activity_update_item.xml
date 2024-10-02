@@ -32,6 +32,7 @@
                 android:layout_height="wrap_content"/>
         </com.google.android.material.textfield.TextInputLayout>
 
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/cp"
             android:layout_width="305dp"
@@ -39,13 +40,13 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="36dp"
+            android:layout_marginTop="16dp"
             android:hint="Cost"
             app:boxStrokeColor="@color/blue"
             app:counterOverflowTextColor="@color/blue"
             app:hintTextColor="@color/blue"
             app:layout_constraintEnd_toEndOf="@+id/Name"
-            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/Name"
             app:layout_constraintTop_toBottomOf="@+id/Name">
 
@@ -64,7 +65,7 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="36dp"
+            android:layout_marginTop="12dp"
             android:hint="Sell Price"
             app:boxStrokeColor="@color/blue"
             app:counterOverflowTextColor="@color/blue"
@@ -89,13 +90,13 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="36dp"
+            android:layout_marginTop="16dp"
             android:hint="Update Stock"
             app:boxStrokeColor="@color/blue"
             app:counterOverflowTextColor="@color/blue"
             app:hintTextColor="@color/blue"
             app:layout_constraintEnd_toEndOf="@+id/sp"
-            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/sp"
             app:layout_constraintTop_toBottomOf="@+id/sp">
 
@@ -105,14 +106,23 @@
                 android:layout_height="wrap_content">
 
             </com.google.android.material.textfield.TextInputEditText>
-        </com.google.android.material.textfield.TextInputLayout>
 
+            <TextView
+                android:id="@+id/deleteitem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:padding="10dp"
+                android:text="Delete this Item"
+                android:textColor="@android:color/holo_red_dark" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/Update"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="28dp"
+            android:layout_marginTop="8dp"
             android:backgroundTint="@color/blue"
             android:elevation="4dp"
             android:fontFamily="@font/nunito_bold"
@@ -121,8 +131,9 @@
             android:textColor="@android:color/white"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/stock"/>
+            app:layout_constraintTop_toBottomOf="@+id/stock" />
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
@@ -136,20 +147,6 @@
             app:navigationIconTint="@color/white"
             app:title="Update Item Details"
             app:titleTextColor="@color/white"/>
-
-        <TextView
-            android:id="@+id/deleteitem"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:padding="10dp"
-            android:text="Delete this Item"
-            android:textColor="@android:color/holo_red_dark"
-            app:layout_constraintEnd_toEndOf="@+id/stock"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="@+id/stock"
-            app:layout_constraintTop_toBottomOf="@+id/stock" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

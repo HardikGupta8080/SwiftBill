@@ -1,4 +1,4 @@
-package com.example.swiftbill.fragments.Adapter
+package com.example.swiftbill.Adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -23,6 +23,7 @@ class item_adapter(
         val textViewCp: TextView = itemView.findViewById(R.id.textViewAge)
         val textViewSp: TextView = itemView.findViewById(R.id.textViewDob)
         val stock: TextView = itemView.findViewById(R.id.instock)
+        val category : TextView= itemView.findViewById(R.id.Catgory)
 
         init {
             itemView.setOnClickListener {
@@ -51,6 +52,7 @@ class item_adapter(
         holder.textViewCp.text = "${item.ratecp}"
         holder.textViewSp.text = "${item.ratesp}"
         holder.stock.text = "${item.inStock}"
+        holder.category.text=item.category
     }
 
     override fun getItemCount()=itemList.size

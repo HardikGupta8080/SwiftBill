@@ -1,27 +1,40 @@
 package com.example.swiftbill.model
 
-class CustomerId {
-    var CustomerName: String?=null
-    var contactNumber: String?= null
-    var billlist: MutableList<Billdata>?= null
-    var openingBal: Int?=null
+import android.os.Parcel
+import android.os.Parcelable
 
+data class CustomerId(
+    var CustomerName: String? = null,
+    var contactNumber: String? = null,
+    var openingBal: Int? = null,
+    var billlist: MutableList<Billdata>? = null
+) : Parcelable {
 
-    constructor()
-    constructor(name:String?,contact:String?,OB:Int?,bill:MutableList<Billdata>?,paid:Boolean?){
-        CustomerName=name
-        contactNumber=contact
-        openingBal=OB
-        this.billlist=bill
+    constructor(parcel: Parcel) : this(
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readValue(Int::class.java.classLoader) as? Int,
+        parcel.createTypedArrayList(Billdata.CREATOR) // Assuming Billdata is also Parcelable
+    )
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(CustomerName)
+        parcel.writeString(contactNumber)
+        parcel.writeValue(openingBal)
+        parcel.writeTypedList(billlist)
     }
-    constructor(name:String?,OB:Int?,bill:MutableList<Billdata>?,paid:Boolean?){
-        CustomerName=name
-        this.billlist=bill
-    }
-    constructor(name:String?,contact:String?,OB:Int?){
-        CustomerName=name
-        contactNumber=contact
-        openingBal=OB
 
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<CustomerId> {
+        override fun createFromParcel(parcel: Parcel): CustomerId {
+            return CustomerId(parcel)
+        }
+
+        override fun newArray(size: Int): Array<CustomerId?> {
+            return arrayOfNulls(size)
+        }
     }
 }

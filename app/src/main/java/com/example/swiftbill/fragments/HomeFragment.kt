@@ -16,7 +16,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.swiftbill.AddsaleActivity
 import com.example.swiftbill.databinding.FragmentHomeBinding
-import com.example.swiftbill.fragments.Adapter.BillAdapter
+import com.example.swiftbill.Adapter.BillAdapter
+import com.example.swiftbill.PartyActivity
+import com.example.swiftbill.R
 import com.example.swiftbill.model.Billdata
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -85,9 +87,12 @@ class HomeFragment : Fragment() {
         // Set up button click listeners
         binding.invetory.setOnClickListener {
             // Handle inventory button click
+                navController.navigate(R.id.action_home_to_items)
+
         }
         binding.party.setOnClickListener {
             // Handle party button click
+            startActivity(Intent(requireContext(),PartyActivity::class.java))
 
         }
         binding.debt.setOnClickListener {
