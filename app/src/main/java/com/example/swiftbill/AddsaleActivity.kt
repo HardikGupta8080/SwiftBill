@@ -1,9 +1,11 @@
 package com.example.swiftbill
 import android.app.AlertDialog
+import android.content.Intent
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.pdf.PdfDocument
+import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
@@ -23,10 +25,13 @@ import com.example.swiftbill.model.BillItem
 import com.example.swiftbill.model.Billdata
 import com.example.swiftbill.model.CustomerId
 import com.example.swiftbill.model.Item
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.io.File
@@ -106,6 +111,23 @@ class AddsaleActivity : AppCompatActivity() {
                 Toast.makeText(this, "Please fill in the Customer Name", Toast.LENGTH_LONG).show()
             }
         }
+        binding.saveandnew.setOnClickListener {
+            val customerName = binding.Coustmername.editText?.text.toString()
+
+            if (customerName.isNotBlank()) {
+                // Save the bill (same logic as 'save')
+                saveBillAndCustomerDetails(currentDate)
+                generateBillPdf()
+
+                // Refresh the activity for a new entry
+                val intent = Intent(this, AddsaleActivity::class.java)
+                finish()  // Finish the current instance of the activity
+                startActivity(intent)  // Start a new instance of the activity
+            } else {
+                Toast.makeText(this, "Please fill in the Customer Name", Toast.LENGTH_LONG).show()
+            }
+        }
+
     }
 
     private fun fetchInventory() {
@@ -384,16 +406,6 @@ class AddsaleActivity : AppCompatActivity() {
     }
 
 
-
-
-
-
-
-
-
-
-
-
     fun updateTotalAmount(): Int {
         val totalAmount = calculateTotalAmount()
         binding.amount.text = " ₹ $totalAmount"
@@ -488,12 +500,16 @@ class AddsaleActivity : AppCompatActivity() {
         pdfDocument.finishPage(page)
 
         // Save to public Documents directory
-        val file = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "Bill_${binding.invoiceNo.text}.pdf")
+        val documentsDirectory = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "Bills")
+        val file = File(documentsDirectory,"Bill_${binding.invoiceNo.text}.pdf")
 
         return try {
             pdfDocument.writeTo(FileOutputStream(file))
-            Toast.makeText(this, "PDF saved to ${file.absolutePath}", Toast.LENGTH_LONG).show()
+
+            uploadPdfToFirebase(file, "Bill_${binding.invoiceNo.text}.pdf")
+
             file // Return the file if successful
+
         } catch (e: IOException) {
             e.printStackTrace()
             Toast.makeText(this, "Error saving PDF: ${e.message}", Toast.LENGTH_LONG).show()
@@ -502,7 +518,36 @@ class AddsaleActivity : AppCompatActivity() {
             pdfDocument.close()
         }
     }
+    fun uploadPdfToFirebase(file: File, fileName: String) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: "unknownUser"
 
+        // Create a unique path for each user based on their UID
+        val storageRef = FirebaseStorage.getInstance().reference.child("users/$userId/pdfs/$fileName")
+        val uri = Uri.fromFile(file)
+
+        storageRef.putFile(uri)
+            .addOnSuccessListener {
+                // Get the download URL after the upload completes
+                storageRef.downloadUrl.addOnSuccessListener { downloadUri ->
+                    val pdfUrl = downloadUri.toString()
+                    // Save the URL to Firestore for the current user
+                    val db = FirebaseFirestore.getInstance()
+                    val documentRef = db.collection("USER").document(userId)
+                        .collection("pdfs").document(fileName)  // Using billId as the document ID
+
+                    documentRef.set(mapOf("pdfUrl" to pdfUrl)) // Update the pdfUrl field for the user
+                        .addOnSuccessListener {
+
+                        }
+                        .addOnFailureListener { e ->
+                            Toast.makeText(this, "Error saving PDF URL: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
+                }
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Error uploading PDF: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
     // Function to draw the full table header (borders)
     fun drawFullTableHeader(canvas: Canvas, paint: Paint, colWidths: FloatArray, topMargin: Float) {
         var xPos = 20f // Starting position

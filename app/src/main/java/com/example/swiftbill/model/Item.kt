@@ -9,7 +9,8 @@ data class Item(
     var ratesp: Int? = null,           // Selling price
     var inStock: Int? = null,          // Quantity in stock
     var uidcode: String? = null,       // Unique identifier code
-    var category: String? = null        // Product category
+    var category: String? = null,
+// Product category
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(

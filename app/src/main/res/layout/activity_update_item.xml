@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:fillViewport="true"
     tools:context=".UpdateItemActivity">
 
@@ -13,50 +14,94 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/Name"
-            android:layout_width="305dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="140dp"
-            android:hint="Product Name"
-            app:boxStrokeColor="@color/blue"
+        <RelativeLayout
+            android:id="@+id/relativeLayout4"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_72sdp"
+            android:background="#E4F2FF"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toBottomOf="@+id/toolbar" >
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/Namee"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-        </com.google.android.material.textfield.TextInputLayout>
+            <TextView
+                android:id="@+id/itemname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="125dp"
+                android:hint="Item Name :"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:textSize="@dimen/_12sdp" />
 
+            <TextView
+                android:id="@+id/textView17"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="31dp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:hint="Item Name :"
+                android:textSize="@dimen/_12sdp" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/cp"
-            android:layout_width="305dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="16dp"
-            android:hint="Cost"
-            app:boxStrokeColor="@color/blue"
-            app:counterOverflowTextColor="@color/blue"
-            app:hintTextColor="@color/blue"
-            app:layout_constraintEnd_toEndOf="@+id/Name"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/Name"
-            app:layout_constraintTop_toBottomOf="@+id/Name">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="267dp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:hint="Stock :"
+                android:textSize="@dimen/_12sdp" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/cost"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/stocks"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="320dp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:hint="Stock"
+                android:textSize="@dimen/_12sdp" />
 
-            </com.google.android.material.textfield.TextInputEditText>
-        </com.google.android.material.textfield.TextInputLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="31dp"
+                android:layout_marginTop="50dp"
+                android:hint="Cost :"
+                android:textSize="@dimen/_12sdp" />
+
+            <TextView
+                android:id="@+id/costp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="123dp"
+                android:layout_marginTop="50dp"
+                android:hint="Cost :"
+                android:textSize="@dimen/_12sdp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="266dp"
+                android:hint="Sell :"
+                android:layout_marginTop="50dp"
+                android:textSize="@dimen/_12sdp" />
+
+            <TextView
+                android:id="@+id/sellp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="321dp"
+                android:layout_marginTop="50dp"
+                android:hint="Sell :"
+                android:textSize="@dimen/_12sdp" />
+        </RelativeLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/sp"
@@ -65,15 +110,14 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="12dp"
-            android:hint="Sell Price"
+            android:layout_marginTop="92dp"
+            android:hint="Cost Price"
             app:boxStrokeColor="@color/blue"
             app:counterOverflowTextColor="@color/blue"
             app:hintTextColor="@color/blue"
-            app:layout_constraintEnd_toEndOf="@+id/cp"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="@+id/cp"
-            app:layout_constraintTop_toBottomOf="@+id/cp">
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/relativeLayout4">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/sell"
@@ -91,7 +135,7 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="16dp"
-            android:hint="Update Stock"
+            android:hint="Stock"
             app:boxStrokeColor="@color/blue"
             app:counterOverflowTextColor="@color/blue"
             app:hintTextColor="@color/blue"
@@ -119,7 +163,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
-            android:id="@+id/Update"
+            android:id="@+id/purchase"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -127,13 +171,13 @@
             android:elevation="4dp"
             android:fontFamily="@font/nunito_bold"
             android:padding="12dp"
-            android:text="Update"
+            android:text="Add Purchase"
             android:textColor="@android:color/white"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/stock" />
+            app:layout_constraintTop_toBottomOf="@+id/stock"/>
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
@@ -147,6 +191,40 @@
             app:navigationIconTint="@color/white"
             app:title="Update Item Details"
             app:titleTextColor="@color/white"/>
+
+        <TextView
+            android:id="@+id/Update"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="232dp"
+            android:layout_marginTop="8dp"
+            android:clickable="true"
+            android:text="Update Item Details"
+            android:textColor="@color/blue"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/relativeLayout4" />
+
+        <TextView
+            android:id="@+id/textView21"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="Add Purchase"
+            app:layout_constraintBottom_toTopOf="@+id/sp"
+            app:layout_constraintStart_toStartOf="@+id/sp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/purchaserecyclerview"
+            android:layout_width="0dp"
+            android:layout_height="382dp"
+            android:layout_marginTop="@dimen/_10sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/purchase"
+            app:layout_constraintVertical_bias="0.0"
+            tools:listitem="@layout/purchase_layout" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

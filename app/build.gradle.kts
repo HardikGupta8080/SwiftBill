@@ -57,6 +57,8 @@ dependencies {
     implementation(libs.firebase.firestore)
     implementation(libs.androidx.foundation.android)
     implementation(libs.androidx.room.ktx)
+    implementation(libs.firebase.storage.ktx)
+    implementation(libs.firebase.storage)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -67,5 +69,11 @@ dependencies {
     implementation (libs.ssp.android)
     implementation ("com.itextpdf:itext7-core:7.1.15")
     implementation ("com.google.android.material:material:1.7.0") // or the latest stable version
+
+    implementation(platform("com.google.firebase:firebase-bom:33.5.0"))
+
+    // Add the dependency for the Cloud Storage library
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation("com.google.firebase:firebase-storage")
 
 }

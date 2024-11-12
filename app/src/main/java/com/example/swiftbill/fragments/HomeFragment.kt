@@ -2,26 +2,32 @@ package com.example.swiftbill.fragments
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Environment
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.swiftbill.AddsaleActivity
-import com.example.swiftbill.databinding.FragmentHomeBinding
 import com.example.swiftbill.Adapter.BillAdapter
+import com.example.swiftbill.AddsaleActivity
 import com.example.swiftbill.PartyActivity
 import com.example.swiftbill.R
+import com.example.swiftbill.databinding.FragmentHomeBinding
 import com.example.swiftbill.model.Billdata
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import java.io.File
+
 class HomeFragment : Fragment() {
     private lateinit var billList: MutableList<Billdata>
     private var _binding: FragmentHomeBinding? = null
@@ -38,6 +44,8 @@ class HomeFragment : Fragment() {
     ): View? {
         fetchAndAnimateText()
         // Inflate the layout for this fragment
+        syncMissingBillsFromFirebase()
+        // Call this method when your app starts or when needed
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -52,7 +60,7 @@ class HomeFragment : Fragment() {
         // Set up RecyclerView
         binding.recyclerView2.apply {
             layoutManager = LinearLayoutManager(requireContext())
-            billAdapter = BillAdapter(billList)
+            billAdapter = BillAdapter(billList,requireContext())
             adapter = billAdapter
 
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -165,4 +173,46 @@ class HomeFragment : Fragment() {
                 }
             }
     }
+    fun syncMissingBillsFromFirebase() {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val storage = FirebaseStorage.getInstance()
+        val firestore = FirebaseFirestore.getInstance()
+        val localDirectory = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "Bills")
+
+        if (!localDirectory.exists()) {
+            localDirectory.mkdirs() // Create the directory if it doesn't exist
+        }
+
+        // Query Firestore to get the list of bills
+        firestore.collection("USER").document(userId).collection("pdfs")
+            .get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    val pdfUrl = document.getString("pdfUrl") ?: continue
+                    val fileName = document.id // Assuming document ID matches "Bill_<billId>.pdf" format
+                    val localFile = File(localDirectory, fileName)
+
+                    // Check if the file is already downloaded
+                    if (!localFile.exists()) {
+                        // If file is missing, download it
+                        downloadPdfFromFirebase(storage.getReferenceFromUrl(pdfUrl), localFile)
+                    }
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.e("SyncBills", "Error fetching documents: ", e)
+            }
+    }
+
+    private fun downloadPdfFromFirebase(storageRef: StorageReference, destinationFile: File) {
+        storageRef.getFile(destinationFile)
+
+            .addOnFailureListener { e ->
+                Log.e("DownloadPDF", "Error downloading file: ", e)
+            }
+    }
+
+
+
+
 }

@@ -1,4 +1,5 @@
 package com.example.swiftbill.fragments
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -105,7 +106,7 @@ class Items : Fragment(), item_adapter.OnItemClickListener {
         itemListener = db.collection("USER").document(Firebase.auth.currentUser?.uid.toString())
             .collection("INVETORY").addSnapshotListener { snapshots, e ->
                 if (e != null) {
-                    Log.w("TAG", "Listen failed.", e)
+
                     return@addSnapshotListener
                 }
 
@@ -158,8 +159,8 @@ class Items : Fragment(), item_adapter.OnItemClickListener {
             "STOCK", item.inStock.toString()
         )// Pass the item's ID or any other necessary data
         intent.putExtra("UID", item.uidcode)
+        intent.putExtra("CATAGORY",item.category)
         startActivity(intent)
-
     }
 
 }
