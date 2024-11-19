@@ -1,7 +1,79 @@
-<?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.DashboardFragment">
-</FrameLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="70dp">
+
+        <!-- Monthly Revenue and Expenses Comparison (Stacked Bar Chart) -->
+        <TextView
+            android:id="@+id/textRevenueExpensesComparison"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="Weekly Revenue"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.github.mikephil.charting.charts.BarChart
+            android:id="@+id/barChartRevenueExpenses"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_250sdp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/textRevenueExpensesComparison"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Top-Selling Products (Pie Chart) -->
+        <TextView
+            android:id="@+id/textTopSellingProducts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Top-Selling Products this Week"
+            android:textSize="18sp"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
+            app:layout_constraintTop_toBottomOf="@id/barChartRevenueExpenses"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <com.github.mikephil.charting.charts.PieChart
+            android:id="@+id/pieChartTopSellingProducts"
+            android:layout_width="0dp"
+            android:layout_height="250dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/textTopSellingProducts"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Sales Over Time (Line Chart) -->
+        <TextView
+            android:id="@+id/textSalesOverTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Profit Over Time in a Week"
+            android:textSize="18sp"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
+            app:layout_constraintTop_toBottomOf="@id/pieChartTopSellingProducts"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/lineChartSalesOverTime"
+            android:layout_width="0dp"
+            android:layout_height="250dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/textSalesOverTime"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

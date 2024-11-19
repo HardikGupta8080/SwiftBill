@@ -12,7 +12,8 @@ data class Billdata(
     var totalAmount: Int? = null,             // Total amount of the bill
     var paid: Boolean? = null,                 // Whether the bill is paid
     var amountpaid: Int? = null,              // Amount paid
-    var bal: Int? = null                       // Remaining balance
+    var bal: Int? = null,
+    var profit: Int? = null// Remaining balance
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
@@ -24,7 +25,9 @@ data class Billdata(
         parcel.readValue(Int::class.java.classLoader) as? Int,
         parcel.readValue(Boolean::class.java.classLoader) as? Boolean,
         parcel.readValue(Int::class.java.classLoader) as? Int,
-        parcel.readValue(Int::class.java.classLoader) as? Int
+        parcel.readValue(Int::class.java.classLoader) as? Int,
+        parcel.readValue(Int::class.java.classLoader) as? Int,
+
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -37,6 +40,7 @@ data class Billdata(
         parcel.writeValue(paid)
         parcel.writeValue(amountpaid)
         parcel.writeValue(bal)
+        parcel.writeValue(profit)
     }
 
     override fun describeContents(): Int {

@@ -9,7 +9,8 @@ data class BillItem(
     var quantity: Int? = null,            // Quantity of the product
     var discount: Int? = null,             // Discount on the product
     var sp: Int? = null,
-    var uid: String? = null, // Selling price
+    var uid: String? = null,
+    var cp:Int? = null// Selling price
 
 
 ) : Parcelable {
@@ -20,6 +21,7 @@ data class BillItem(
         parcel.readValue(Int::class.java.classLoader) as? Int,
         parcel.readValue(Int::class.java.classLoader) as? Int,
         parcel.readString(),
+        parcel.readValue(Int::class.java.classLoader) as? Int
 
     )
 
@@ -30,6 +32,7 @@ data class BillItem(
         parcel.writeValue(discount)
         parcel.writeValue(sp)
         parcel.writeString(uid)
+        parcel.writeValue(cp)
     }
 
     override fun describeContents(): Int {

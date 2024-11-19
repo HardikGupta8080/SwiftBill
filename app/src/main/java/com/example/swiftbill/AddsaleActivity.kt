@@ -24,9 +24,11 @@ import com.example.swiftbill.Adapter.Bill_Item_Adapter
 import com.example.swiftbill.model.BillItem
 import com.example.swiftbill.model.Billdata
 import com.example.swiftbill.model.CustomerId
+import com.example.swiftbill.model.InventoryTransaction
 import com.example.swiftbill.model.Item
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.SetOptions
@@ -48,6 +50,8 @@ class AddsaleActivity : AppCompatActivity() {
     }
     private var  customerList:MutableList<CustomerId> = mutableListOf()
     private var itemlist: MutableList<Item> = mutableListOf()
+    private val initialBillItems: MutableList<BillItem> = mutableListOf()
+    private val BillItemsList: MutableList<BillItem> = mutableListOf()
 
 
 
@@ -126,6 +130,7 @@ class AddsaleActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(this, "Please fill in the Customer Name", Toast.LENGTH_LONG).show()
             }
+
         }
 
     }
@@ -165,7 +170,6 @@ class AddsaleActivity : AppCompatActivity() {
     }
 
     private fun initializeRecyclerView() {
-        val initialBillItems: MutableList<BillItem> = mutableListOf()
         billItemAdapter = Bill_Item_Adapter(this, initialBillItems, { billItem, position ->
             showAddItemDialog(
                 selectedItem = Item(),
@@ -201,6 +205,7 @@ class AddsaleActivity : AppCompatActivity() {
                 amountpaid=Paidamount
                 bal = totalAmount!! - amountpaid!!
                 paid = bal!! <=0
+                profit=calculatetotalprofit()
             }
 
             val customer = CustomerId().apply {
@@ -324,7 +329,8 @@ class AddsaleActivity : AppCompatActivity() {
                         quantity = quantity.toInt(),
                         discount = discount.toInt(),
                         sp = salePrice.toInt(),
-                        uid = selectedItem.uidcode
+                        uid = selectedItem.uidcode,
+                        cp = selectedItem.ratecp
                     )
 
                     if (billItemToUpdate != null && position != null) {
@@ -416,6 +422,7 @@ class AddsaleActivity : AppCompatActivity() {
         return billItemAdapter.getItems()
             .sumOf { (it.sp?.minus(it.discount!!))?.times(it.quantity!!) ?: 0 }
     }
+
 
     private fun getLastInvoiceNumber(callback: (Int) -> Unit) {
         db.collection("USER").document(Firebase.auth.currentUser?.uid.toString()).collection("BILL")
@@ -519,6 +526,7 @@ class AddsaleActivity : AppCompatActivity() {
         }
     }
     fun uploadPdfToFirebase(file: File, fileName: String) {
+        addSaleTransaction()
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: "unknownUser"
 
         // Create a unique path for each user based on their UID
@@ -590,7 +598,6 @@ class AddsaleActivity : AppCompatActivity() {
                 } else {
                     showAddItemDialog(it)
                 }
-
                 val adapter = ArrayAdapter(
                     this,
                     android.R.layout.simple_dropdown_item_1line,
@@ -599,6 +606,42 @@ class AddsaleActivity : AppCompatActivity() {
                 binding.autoCompleteItems.setAdapter(adapter)
             }
         }
+    }
+    fun addSaleTransaction() {
+
+
+        // Get the user and item IDs
+        val userId = Firebase.auth.currentUser?.uid.toString()
+        for(item in initialBillItems) {
+            var itemId = item.uid
+            // Replace with the actual item ID
+            val saleTransaction = InventoryTransaction(
+                date = LocalDate.now().toString(),
+                price = item.sp.toString().toInt(),
+                quantity = item.quantity.toString().toInt(),
+                transactionType = "Sale"
+            )
+
+        // Reference to the transactions collection
+        db.collection("USER")
+            .document(userId)
+            .collection("INVETORY")
+            .document(itemId!!)
+            .collection("TRANSACTIONS")
+            .document()
+            .set(saleTransaction)
+            .addOnSuccessListener {
+                // Optionally, update the total inventory quantity here
+
+            }
+    }
+    }
+    fun calculatetotalprofit(): Int {
+        var profit =0
+        for (item in initialBillItems){
+            profit=profit+(item.sp!!-item.cp!!-item.discount!!)*item.quantity!!
+        }
+        return profit
     }
 
 }

@@ -18,8 +18,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.swiftbill.Adapter.PurchaseItemAdapter
 import com.example.swiftbill.Adapter.item_adapter
 import com.example.swiftbill.databinding.ActivityUpdateItemBinding
+import com.example.swiftbill.model.InventoryTransaction
 import com.example.swiftbill.model.Item
-import com.example.swiftbill.model.PurchaseItem
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -191,7 +191,7 @@ class UpdateItemActivity : AppCompatActivity() {
                 val quantity = quantityText.toInt()
                 val currentDate = LocalDate.now().toString()
 
-                val purchaseItem:PurchaseItem = PurchaseItem(currentDate,cp, quantity)
+                val purchaseItem:InventoryTransaction = InventoryTransaction(currentDate,cp, quantity,"Purchase")
 
                 val userId = Firebase.auth.currentUser?.uid.toString()
                 val itemUid = uid
@@ -219,7 +219,7 @@ class UpdateItemActivity : AppCompatActivity() {
                                     itemDocRef.set(existingItem)
                                         .addOnSuccessListener {
                                             // Add purchase item to PURCHASE subcollection
-                                            itemDocRef.collection("PURCHASE")
+                                            itemDocRef.collection("TRANSACTIONS")
                                                 .document()
                                                 .set(purchaseItem)
                                                 .addOnSuccessListener {
@@ -269,14 +269,27 @@ class UpdateItemActivity : AppCompatActivity() {
             }
         }
         //recyclerview
+        val transactions = listOf(
+            InventoryTransaction(date = "2024-11-01", price = 100, quantity = 10, transactionType = "purchase"),
+            InventoryTransaction(date = "2024-11-02", price = 120, quantity = -5, transactionType = "sale"),
+            InventoryTransaction(date = "2024-11-03", price = 150, quantity = 20, transactionType = "purchase"),
+            InventoryTransaction(date = "2024-11-04", price = 130, quantity = -7, transactionType = "sale"),
+            InventoryTransaction(date = "2024-11-05", price = 200, quantity = 15, transactionType = "purchase"),
+            InventoryTransaction(date = "2024-11-06", price = 180, quantity = -10, transactionType = "sale"),
+            InventoryTransaction(date = "2024-11-07", price = 220, quantity = 30, transactionType = "purchase"),
+            InventoryTransaction(date = "2024-11-08", price = 160, quantity = -8, transactionType = "sale"),
+            InventoryTransaction(date = "2024-11-09", price = 250, quantity = 25, transactionType = "purchase"),
+            InventoryTransaction(date = "2024-11-10", price = 170, quantity = -12, transactionType = "sale")
+        )
+
         val userId = Firebase.auth.currentUser?.uid.toString()
         if (userId == null || uid == null) {
             Toast.makeText(this, "User ID or Item UID not found", Toast.LENGTH_SHORT).show()
             return // Exit if user or item ID is null
         }
 
-        val purchaseItemlist: MutableList<PurchaseItem> = mutableListOf()
-        val padapter = PurchaseItemAdapter(purchaseItemlist)
+        val purchaseItemlist: MutableList<InventoryTransaction> = mutableListOf()
+         padapter = PurchaseItemAdapter(purchaseItemlist)
 
         binding.purchaserecyclerview.apply {
             layoutManager = LinearLayoutManager(this@UpdateItemActivity)
@@ -288,7 +301,7 @@ class UpdateItemActivity : AppCompatActivity() {
             .document(userId)
             .collection("INVETORY")
             .document(uid)
-            .collection("PURCHASE")
+            .collection("TRANSACTIONS")
             .addSnapshotListener { documents, exception ->
                 if (exception != null) {
                     Log.e("Firestore", "Error retrieving purchases", exception)
@@ -300,10 +313,11 @@ class UpdateItemActivity : AppCompatActivity() {
                     for (document in documents) {
                         try {
                             // Attempt to convert the document to a PurchaseItem object
-                            val purchaseItem = document.toObject(PurchaseItem::class.java)
+                            val purchaseItem = document.toObject(InventoryTransaction::class.java)
 
                             // Add to the list if no exception occurs
                             purchaseItemlist.add(purchaseItem)
+                            Log.d("Firestore", "Transaction added: $purchaseItem")
                         } catch (e: Exception) {
                             // Log the exception and document ID if the conversion fails
                             Log.e("FirestoreError", "Error parsing document ${document.id}: ${e.message}")

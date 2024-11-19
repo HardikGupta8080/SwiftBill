@@ -6,10 +6,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.swiftbill.R
-import com.example.swiftbill.model.PurchaseItem
+import com.example.swiftbill.model.InventoryTransaction
 
 class PurchaseItemAdapter(
-    private val purchaseItemList: List<PurchaseItem>
+    private val purchaseItemList: List<InventoryTransaction>
 ) : RecyclerView.Adapter<PurchaseItemAdapter.ViewHolder>() {
 
     // ViewHolder class to represent each item view
@@ -17,6 +17,7 @@ class PurchaseItemAdapter(
         val date: TextView = view.findViewById(R.id.datepurchase)
         val cp: TextView = view.findViewById(R.id.cppurchase)
         val stock: TextView = view.findViewById(R.id.quantity)
+        val type: TextView = view.findViewById(R.id.type)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -32,8 +33,8 @@ class PurchaseItemAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val purchaseData = purchaseItemList[position]
         holder.date.text = purchaseData.date ?: "N/A"
-        holder.cp.text = purchaseData.cp?.toString() ?: "0"
+        holder.cp.text = purchaseData.price?.toString() ?: "0"
         holder.stock.text = purchaseData.quantity?.toString() ?: "0"
-
+        holder.type.text = purchaseData.transactionType?.toString()?:"N/A"
     }
 }
