@@ -1,4 +1,4 @@
-package com.example.swiftbill
+package com.example.swiftbill.Activity
 
 import android.content.Intent
 import android.os.Bundle
@@ -51,7 +51,7 @@ class SignupActivity : AppCompatActivity() {
                                         "email" to user.email.toString()
                                     )
                                     db.collection("USER").document(Firebase.auth.currentUser?.uid.toString()).set(userMap)
-                                    startActivity(Intent(this@SignupActivity,HostActivity::class.java))
+                                    startActivity(Intent(this@SignupActivity, HostActivity::class.java))
                                     finish()
                                 }
                                 else {
@@ -72,7 +72,7 @@ class SignupActivity : AppCompatActivity() {
                 }
             }//For creating a new user(sign up)
         binding.gotologin.setOnClickListener {
-            startActivity(Intent(this,LogIn_Activity::class.java))
+            startActivity(Intent(this, LogIn_Activity::class.java))
         }//going back to login activity......//
         setContentView(binding.root)
     }

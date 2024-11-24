@@ -1,6 +1,6 @@
 // UpdateItemActivity.kt
 
-package com.example.swiftbill
+package com.example.swiftbill.Activity
 
 import android.app.AlertDialog
 import android.content.Intent
@@ -13,10 +13,8 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.swiftbill.Adapter.PurchaseItemAdapter
-import com.example.swiftbill.Adapter.item_adapter
 import com.example.swiftbill.databinding.ActivityUpdateItemBinding
 import com.example.swiftbill.model.InventoryTransaction
 import com.example.swiftbill.model.Item

@@ -6,17 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.RecyclerView
-import com.example.swiftbill.AddsaleActivity
+import com.example.swiftbill.Activity.AddsaleActivity
 import com.example.swiftbill.R
-import com.example.swiftbill.databinding.ActivityAddsaleBinding
-import com.example.swiftbill.databinding.DialogAddItemBinding
 import com.example.swiftbill.model.BillItem
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.InternalCoroutinesApi
-import kotlinx.coroutines.NonDisposableHandle
-import kotlinx.coroutines.NonDisposableHandle.parent
 
 class Bill_Item_Adapter(
     private val context: Context,

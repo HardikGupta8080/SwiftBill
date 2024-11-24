@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.swiftbill.PartyActivity
+import com.example.swiftbill.Activity.PartyActivity
 import com.example.swiftbill.R
 import com.example.swiftbill.model.CustomerId
 

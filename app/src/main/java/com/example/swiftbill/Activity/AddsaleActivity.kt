@@ -1,4 +1,4 @@
-package com.example.swiftbill
+package com.example.swiftbill.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Canvas
@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.swiftbill.databinding.ActivityAddsaleBinding
 import com.example.swiftbill.databinding.DialogAddItemBinding
 import com.example.swiftbill.Adapter.Bill_Item_Adapter
+import com.example.swiftbill.R
 import com.example.swiftbill.model.BillItem
 import com.example.swiftbill.model.Billdata
 import com.example.swiftbill.model.CustomerId
@@ -28,10 +29,8 @@ import com.example.swiftbill.model.InventoryTransaction
 import com.example.swiftbill.model.Item
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.SetOptions
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import java.time.LocalDate

@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:fillViewport="true"
-    tools:context=".UpdateItemActivity">
+    tools:context=".Activity.UpdateItemActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main"
@@ -121,6 +121,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/sell"
+                android:inputType="number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -136,6 +137,7 @@
             android:layout_alignParentEnd="true"
             android:layout_marginTop="16dp"
             android:hint="Stock"
+
             app:boxStrokeColor="@color/blue"
             app:counterOverflowTextColor="@color/blue"
             app:hintTextColor="@color/blue"
@@ -146,6 +148,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/stok"
+                android:inputType="number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -225,6 +228,16 @@
             app:layout_constraintTop_toBottomOf="@+id/purchase"
             app:layout_constraintVertical_bias="0.0"
             tools:listitem="@layout/purchase_layout" />
+
+        <TextView
+            android:id="@+id/textView22"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="44dp"
+            android:text="Tracking of Item"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/stock" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

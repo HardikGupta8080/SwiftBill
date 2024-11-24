@@ -1,8 +1,6 @@
 package com.example.swiftbill.fragments
-import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -20,7 +18,7 @@ import com.google.firebase.firestore.ListenerRegistration
 import androidx.appcompat.widget.SearchView
 
 
-import com.example.swiftbill.UpdateItemActivity
+import com.example.swiftbill.Activity.UpdateItemActivity
 import com.example.swiftbill.model.Item
 
 import com.google.firebase.Firebase

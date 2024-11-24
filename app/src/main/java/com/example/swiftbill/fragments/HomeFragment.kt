@@ -10,15 +10,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.swiftbill.Adapter.BillAdapter
-import com.example.swiftbill.AddsaleActivity
-import com.example.swiftbill.PartyActivity
+import com.example.swiftbill.Activity.AddsaleActivity
+import com.example.swiftbill.Activity.PartyActivity
 import com.example.swiftbill.R
 import com.example.swiftbill.databinding.FragmentHomeBinding
 import com.example.swiftbill.model.Billdata
@@ -100,7 +99,7 @@ class HomeFragment : Fragment() {
         }
         binding.party.setOnClickListener {
             // Handle party button click
-            startActivity(Intent(requireContext(),PartyActivity::class.java))
+            startActivity(Intent(requireContext(), PartyActivity::class.java))
 
         }
         binding.debt.setOnClickListener {

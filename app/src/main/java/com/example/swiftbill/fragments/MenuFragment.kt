@@ -7,7 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.swiftbill.LogIn_Activity
+import com.example.swiftbill.Activity.LogIn_Activity
 import com.example.swiftbill.databinding.FragmentMenuBinding
 import com.google.firebase.auth.FirebaseAuth
 

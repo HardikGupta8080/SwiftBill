@@ -26,7 +26,7 @@ data class Billdata(
         parcel.readValue(Boolean::class.java.classLoader) as? Boolean,
         parcel.readValue(Int::class.java.classLoader) as? Int,
         parcel.readValue(Int::class.java.classLoader) as? Int,
-        parcel.readValue(Int::class.java.classLoader) as? Int,
+        parcel.readValue(Int::class.java.classLoader) as? Int
 
     )
 

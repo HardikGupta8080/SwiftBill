@@ -1,4 +1,4 @@
-package com.example.swiftbill
+package com.example.swiftbill.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
@@ -21,12 +21,12 @@ class LogIn_Activity : AppCompatActivity() {
         binding = ActivityLogInBinding.inflate(layoutInflater)
 
         binding.forgotpassword.setOnClickListener {
-            startActivity(Intent(this,ForgotPasswordActivity::class.java))
+            startActivity(Intent(this, ForgotPasswordActivity::class.java))
         }
 
         auth= Firebase.auth
         binding.tosignup.setOnClickListener {
-            startActivity(Intent(this,SignupActivity::class.java))
+            startActivity(Intent(this, SignupActivity::class.java))
         }
         binding.LoinButton.onSlideCompleteListener = object : SlideToActView.OnSlideCompleteListener{
             override fun onSlideComplete(view: SlideToActView) {

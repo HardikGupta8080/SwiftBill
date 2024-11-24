@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/shape"
-    android:layout_margin="5dp">
+    android:layout_margin="2dp">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -41,9 +41,10 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
+                android:id="@+id/date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="192dp"
+                android:layout_marginStart="96dp"
                 android:layout_marginTop="36dp"
                 android:text="Date"
                 app:layout_constraintStart_toEndOf="@+id/paymentid"
@@ -55,17 +56,8 @@
                 android:layout_height="wrap_content"
 
                 android:layout_marginTop="12dp"
-                android:hint="Total"
+                android:hint="Amount ₹:"
                 app:layout_constraintStart_toStartOf="@+id/paymentid"
-                app:layout_constraintTop_toBottomOf="@+id/paymentid" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="112dp"
-                android:layout_marginTop="12dp"
-                android:hint="Balance"
-                app:layout_constraintStart_toEndOf="@+id/textView19"
                 app:layout_constraintTop_toBottomOf="@+id/paymentid" />
 
             <TextView
@@ -77,14 +69,6 @@
                 app:layout_constraintBottom_toBottomOf="@+id/textView19"
                 app:layout_constraintStart_toEndOf="@+id/textView19" />
 
-            <TextView
-                android:id="@+id/balancep"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="168dp"
-                android:text="totl"
-                app:layout_constraintBottom_toBottomOf="@+id/textView19"
-                app:layout_constraintStart_toEndOf="@+id/textView19" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>
