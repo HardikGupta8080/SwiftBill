@@ -9,7 +9,7 @@
         android:id="@+id/cardView"
         android:layout_marginBottom="@dimen/_4sdp"
         android:layout_width="0dp"
-        android:layout_height="70dp"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -20,7 +20,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:background="#9FD0FF"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/quantity"
@@ -39,8 +39,8 @@
                 android:id="@+id/textView25"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="216dp"
-                android:layout_marginTop="32dp"
+                android:layout_marginStart="256dp"
+                android:layout_marginTop="28dp"
                 android:hint="Quantity"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
@@ -50,8 +50,8 @@
                 android:id="@+id/textView24"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="44dp"
-                android:layout_marginTop="32dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="28dp"
                 android:hint="Purchase Price"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
@@ -74,7 +74,7 @@
                 android:id="@+id/datepurchase"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="160dp"
+                android:layout_marginStart="256dp"
                 android:layout_marginTop="4dp"
                 android:text="TextView"
                 app:layout_constraintStart_toStartOf="parent"
@@ -84,7 +84,7 @@
                 android:id="@+id/type"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="44dp"
+                android:layout_marginStart="24dp"
                 android:layout_marginTop="4dp"
                 android:text="TextView"
                 app:layout_constraintStart_toStartOf="parent"

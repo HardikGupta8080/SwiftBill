@@ -106,11 +106,6 @@ class DashboardFragment : Fragment() {
     }
 
     private fun setupLineChart(entries:List<Entry>) {
-       /* val entries = arrayListOf(
-            Entry(2010f, 2000f),
-            Entry(2011f, 3000f),
-            Entry(2012f, 4000f)
-        )*/
 
         val dataSet = LineDataSet(entries, "Sales Over Time")
         dataSet.color = ContextCompat.getColor(requireContext(), R.color.blue)
@@ -141,7 +136,7 @@ class DashboardFragment : Fragment() {
         val revenueDataSet = BarDataSet(allEntries, "Revenue").apply {
             color = ContextCompat.getColor(requireContext(), R.color.blue)
             xMax
-        // Set the color of the bars
+            // Set the color of the bars
         }
 
         // Create the BarData object using the dataset
@@ -192,14 +187,27 @@ class DashboardFragment : Fragment() {
     fun calculateWeeklySales(bills: List<Billdata>) {
         val weeklySales = mutableMapOf<Int, Double>()
         val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+        val tagq = "w"
+        val calendar = Calendar.getInstance()
 
+        // Determine the total number of weeks in the current month
+        val currentMonth = calendar.get(Calendar.MONTH)
+        val currentYear = calendar.get(Calendar.YEAR)
+        calendar.set(currentYear, currentMonth, 1) // Set to the first day of the current month
+        val totalWeeksInMonth = calendar.getActualMaximum(Calendar.WEEK_OF_MONTH)
+
+        // Initialize weeklySales with all weeks set to 0
+        for (week in 1..totalWeeksInMonth) {
+            weeklySales[week] = 0.0
+        }
+
+        // Process the bills and update weeklySales
         for (bill in bills) {
             try {
                 // Parse the date
                 val billDate = dateFormat.parse(bill.date) ?: throw IllegalArgumentException("Invalid date format: ${bill.date}")
 
                 // Set calendar date
-                val calendar = Calendar.getInstance()
                 calendar.time = billDate
 
                 // Set first day of the week to Monday
@@ -208,20 +216,53 @@ class DashboardFragment : Fragment() {
                 // Calculate the week of the month
                 val weekOfMonth = calendar.get(Calendar.WEEK_OF_MONTH)
 
-                println("Processing bill: $bill")
-                println("Date: ${bill.date} -> Week of Month: $weekOfMonth")
+                Log.d(tagq, "Processing bill: ${bill.billId}")
+                Log.d(tagq, "Date: ${bill.date} -> Week of Month: $weekOfMonth")
 
                 // Add the total amount to the respective week
                 weeklySales[weekOfMonth] = (weeklySales[weekOfMonth] ?: 0.0) + bill.totalAmount!!
             } catch (e: Exception) {
-                println("Error processing bill ${bill.billId}: ${e.message}")
+                Log.e(tagq, "Error processing bill ${bill.billId}: ${e.message}")
             }
         }
 
-        println("Final Weekly Sales: $weeklySales")
-        val weeklyEntries = weeklySales.entries.map { BarEntry(it.key.toFloat(), it.value.toFloat()) }
-        setupBarChart(weeklyEntries)
+        Log.d(tagq, "Final Weekly Sales: $weeklySales")
+
+        // Prepare the data for the bar chart
+        val barEntries = weeklySales.map { BarEntry(it.key.toFloat(), it.value.toFloat()) }
+        val labels = weeklySales.keys.map { "Week "+(it-1) } // Create labels for each week
+
+        // Set up the BarDataSet
+        val barDataSet = BarDataSet(barEntries, "Sales Data").apply {
+            color = Color.BLUE
+            valueTextColor = Color.BLACK
+            valueTextSize = 10f
+        }
+
+        // Create BarData
+        val barData = BarData(barDataSet)
+
+        // Reference to the BarChart in the layout
+        val barChart = binding.barChartRevenueExpenses
+
+        // Set data to the BarChart
+        barChart.data = barData
+
+        // Customize the X-axis
+        val xAxis = barChart.xAxis
+        xAxis.valueFormatter = IndexAxisValueFormatter(labels) // Set the keys as labels
+        xAxis.position = XAxis.XAxisPosition.BOTTOM // Position labels at the bottom
+        xAxis.granularity = 1f // Ensure one label per bar
+        xAxis.setDrawGridLines(false) // Optional: Remove grid lines for clarity
+
+        // Remove description text
+        barChart.description.isEnabled = false
+
+        // Refresh the chart
+        barChart.invalidate()
     }
+
+
     fun calculateWeeklyProfit(bills :List<Billdata>) {
        val weeklyProfit = mutableMapOf<Int, Double>()
        val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
@@ -253,6 +294,7 @@ class DashboardFragment : Fragment() {
        }
        val weeklyEntries = weeklyProfit.entries.map { Entry(it.key.toFloat(), it.value.toFloat()) }
        setupLineChart(weeklyEntries)
+
    }
     fun calculateCurrentWeekTopProducts(bills: List<Billdata>): List<Pair<String, Int>> {
         val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())

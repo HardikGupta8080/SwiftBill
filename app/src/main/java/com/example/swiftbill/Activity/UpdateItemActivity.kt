@@ -44,14 +44,14 @@ class UpdateItemActivity : AppCompatActivity() {
             finish()
         }
         // Get the item ID or other data from the intent
-        val itemId = intent.getStringExtra("ITEM_NAME")
+        val itemName = intent.getStringExtra("ITEM_NAME")
         val cp = intent.getStringExtra("CP")
         val sp = intent.getStringExtra("SP")
         val stock = intent.getStringExtra("STOCK")
         val uid = intent.getStringExtra("UID")
         val catgory = intent.getStringExtra("CATAGORY")
-        Log.d("tag", itemId.toString())
-        binding.itemname.setText(itemId)
+        Log.d("tag", itemName.toString())
+        binding.itemname.setText(itemName)
         binding.costp.setText(cp)
         binding.sellp.setText(sp)
         binding.stocks.setText(stock)
@@ -119,11 +119,11 @@ class UpdateItemActivity : AppCompatActivity() {
 
             val nameInput = EditText(this).apply {
                 hint = "Enter Product Name"
-                setText(itemId)
+                setText(itemName)
             }
             val spInput = EditText(this).apply {
                 hint = "Enter Selling Price (SP)"
-                setText(cp)
+                setText(sp)
                 inputType = InputType.TYPE_CLASS_NUMBER // Set input type for numeric entry
             }
             val category = EditText(this).apply {
@@ -267,18 +267,7 @@ class UpdateItemActivity : AppCompatActivity() {
             }
         }
         //recyclerview
-        val transactions = listOf(
-            InventoryTransaction(date = "2024-11-01", price = 100, quantity = 10, transactionType = "purchase"),
-            InventoryTransaction(date = "2024-11-02", price = 120, quantity = -5, transactionType = "sale"),
-            InventoryTransaction(date = "2024-11-03", price = 150, quantity = 20, transactionType = "purchase"),
-            InventoryTransaction(date = "2024-11-04", price = 130, quantity = -7, transactionType = "sale"),
-            InventoryTransaction(date = "2024-11-05", price = 200, quantity = 15, transactionType = "purchase"),
-            InventoryTransaction(date = "2024-11-06", price = 180, quantity = -10, transactionType = "sale"),
-            InventoryTransaction(date = "2024-11-07", price = 220, quantity = 30, transactionType = "purchase"),
-            InventoryTransaction(date = "2024-11-08", price = 160, quantity = -8, transactionType = "sale"),
-            InventoryTransaction(date = "2024-11-09", price = 250, quantity = 25, transactionType = "purchase"),
-            InventoryTransaction(date = "2024-11-10", price = 170, quantity = -12, transactionType = "sale")
-        )
+
 
         val userId = Firebase.auth.currentUser?.uid.toString()
         if (userId == null || uid == null) {
