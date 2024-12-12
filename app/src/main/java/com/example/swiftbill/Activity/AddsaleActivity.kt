@@ -577,6 +577,8 @@ class AddsaleActivity : AppCompatActivity() {
     fun drawTextInTable(canvas: Canvas, text: String, xPos: Float, yPos: Float, colWidth: Float, paint: Paint) {
         paint.color = Color.BLACK // Ensure text is always black
         canvas.drawText(text, xPos + 10f, yPos, paint)
+
+
     }
 
     private fun handleAutoCompleteSelection() {
